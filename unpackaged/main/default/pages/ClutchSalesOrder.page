@@ -1,0 +1,276 @@
+<apex:page controller="SalesOrderPDFController" applyBodyTag="false" showHeader="false" sidebar="false" renderAs="pdf">
+    <head>
+        <style>
+            @page {
+                margin:30px .5in 1.55in .5in;
+                counter-increment: pages;
+                @bottom-center {
+                    content : element(footer);
+                }
+            }
+            body {
+              font-family: Arial, sans-serif;
+             }
+            #header {
+              font-size: 1.2em;
+              font-weight: bold;
+            }
+            .section {
+               font-size: .9em;
+            }
+            .row {
+               float: left;
+               margin: 10px 0;
+            }
+            .col {
+              width: 48%;
+            }
+            
+            .left {
+              float: left;
+            }
+            .right {
+             float: right;
+            }
+            p {
+              margin: 0px;
+              padding: 0px;
+            }
+            .table {
+              width: 100%;
+              border-collapse: collapse;
+              font-size: .7em;
+            }
+            .table,
+            .table th,
+            .table td {
+              border: 1px solid #ddd;
+              padding: 6px;
+            }
+            .table th {
+              background-color: #f4f4f4;
+              font-weight: bold;
+            }
+            .totals {
+                width: 100%;
+                text-align: right;
+            }
+            .totals .column {
+                float: right; 
+                width: 200px; 
+                margin-left: 0px; 
+            }
+            .totals .labels {
+                text-align: right;
+            }
+            .totals .values {
+                text-align: right;
+                width: 150px; 
+            }
+            .totals p {
+                font-size: .8em;
+                margin: 0 0 4px 0;
+            }
+            .footer {
+                position: running(footer);
+                font-size: .7em;
+            }
+            #pageNum:before {
+                content: counter(pages);
+            }
+        </style>    
+    </head>
+    <body>
+        
+    <div id="header" class="section">
+        <div class="row">
+            <div class="col left">
+                <apex:outputpanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                    <apex:image id="logoCA" value="{!$Resource.LogoCA}" width="200"/>   
+                </apex:outputpanel>
+                <!-- <apex:outputpanel rendered="{!account.RecordType.Name == 'US Account'}">
+                    <apex:image id="logoUS" value="{!$Resource.LogoUS}" width="225"/>   
+                </apex:outputpanel>*/-->
+            </div>
+            <div class="col right" style="text-align: right;">
+                <strong style="font-size:26pt;">Order</strong>
+            </div>
+        </div>
+    </div>
+    
+    <div id="quoteHeader" class="section">
+        <div class="row">
+            <div class="col left">
+                <p><strong>Clutch Solutions</strong><br/>
+                <apex:outputpanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                    250 - 6th Avenue SW<br/>
+                    Suite 1230<br/>
+                    Calgary, AB T2P 3H7<br/>
+                    CA<br/>
+                    Phone: 888-822-5882<br/>  
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!account.RecordType.Name == 'US Account'}">
+                    2152 S Vineyard Ave, Bldg. 1<br/>
+                    Suite 102<br/>
+                    Mesa AZ 85210<br/>
+                    US<br/>
+                    Phone: 888-822-5882<br/>  
+                </apex:outputpanel>
+                <a href="https://clutchsolutions.com/">https://clutchsolutions.com/</a></p>
+            </div>
+            <div class="col right">
+                <p><strong>Sales Order #</strong> {!salesOrder.varcpq__SO_Number__c}<br/>
+                <apex:outputPanel rendered="{!NOT(ISBLANK(salesOrder.varcpq__Customer_PO__c))}">
+                    <strong>Customer Purchase Order #</strong> {!salesOrder.varcpq__Customer_PO__c}<br/>
+                </apex:outputPanel>
+                <strong>Order Date:</strong>
+                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!NOW()}" /> 
+                    </apex:outputText><br/>
+                <strong>Account Exec:</strong> {!salesOrder.CreatedBy.Name}<br/>
+                <strong>Email:</strong> {!salesOrder.CreatedBy.Email}</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="shippingInfo" class="section">
+        <div class="row">
+            <div class="col left">
+                <p><strong>Bill To:</strong><br/>
+                {!IF(ISBLANK(salesOrder.Billing_Company__c), 'Clutch Solutions CA', salesOrder.Billing_Company__c)}<br/>   
+                ATTN: {!salesOrder.varcpq__Billing_Contact__r.Name}<br/>
+                {!salesOrder.varcpq__Billing_Address__r.varcpq__Street__c}<br/>
+                {!salesOrder.varcpq__Billing_Address__r.varcpq__City__c}, {!salesOrder.varcpq__Billing_Address__r.varcpq__State__c} {!salesOrder.varcpq__Billing_Address__r.varcpq__Zipcode__c}<br/>
+                {!salesOrder.varcpq__Billing_Address__r.Country__c}<br/>
+                Email: {!IF(ISBLANK(salesOrder.Billing_Email__c), 'danny.valdez@clutchsolutions.com', salesOrder.Billing_Email__c)}</p>
+            </div>
+            <div class="col right">
+            <p><strong>Ship To:</strong><br/>
+                {!IF(ISBLANK(salesOrder.Shipping_Company__c), 'Clutch Solutions CA', salesOrder.Shipping_Company__c)}<br/> 
+                ATTN: {!salesOrder.varcpq__Shipping_Contact__r.Name}<br/>
+                {!salesOrder.varcpq__Shipping_Address__r.varcpq__Street__c}<br/>
+                {!salesOrder.varcpq__Shipping_Address__r.varcpq__City__c}, {!salesOrder.varcpq__Shipping_Address__r.varcpq__State__c} {!salesOrder.varcpq__Shipping_Address__r.varcpq__Zipcode__c}<br/>
+                {!salesOrder.varcpq__Shipping_Address__r.Country__c}<br/>
+                Email: {!IF(ISBLANK(salesOrder.Shipping_Email__c), 'danny.valdez@clutchsolutions.com', salesOrder.Shipping_Email__c)}</p>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    <div class="section">
+        <div class="row">
+            <div class="col left" style="width: 48%;">
+                <p><strong>Description</strong>: {!quote.Description}</p>
+            </div>
+            <div class="col right" style="width: 48%;">
+                <p><strong>Ship Via</strong>: {!quote.AVA_SFCLOUD__Shipping_Method__c}</p>
+            </div>
+        </div>
+    </div>
+    -->
+<div class="section">
+    <div class="row left">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width:4%;text-align:center;">Item</th>
+                    <th style="width:15%;">Mfg</th>
+                    <th style="width:10%;">Mfg Part #</th>
+                    <th style="width:5%;text-align:center;">Qty</th>
+                    <th>Description</th>
+                    <th style="width:13%;text-align:right;">Price</th>
+                    <th style="width:13%;text-align:right;">Extended Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!salesOrderLineItems}" var="line">
+                    <tr>
+                        <td style="text-align:center;"><apex:outputText value="{!TEXT(line.varcpq__Line__c)}"/></td>
+                        <td>{!line.varcpq__Product__r.varcpq__Manufacturer__r.Name}</td>
+                        <td>{!line.varcpq__Product__r.varcpq__PARTNUMBER__c}</td>
+                        <td style="text-align:center;"><apex:outputText value="{!TEXT(line.varcpq__Quantity__c)}"/></td>
+                        <td>{!line.varcpq__Description__c}</td>
+                        <td style="text-align:right;">
+                            <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${!TEXT(line.varcpq__Unit_Price__c)}" />
+                        </td>
+                        <td style="text-align:right;">
+                            <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${!TEXT(line.varcpq__Total_Ext_Price__c)}" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <div class="totals" >
+        <div class="column values" style="margin-top:10px;" >
+            <p>
+               
+                <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD {0, Number, Currency}">
+                                 <apex:param value="{!salesOrder.varcpq__Total_Expected_Revenue__c}" />
+                </apex:outputText>
+            </p>
+            <apex:outputpanel rendered="{!NOT(ISBLANK(salesOrder.varcpq__Shipping_and_Handling__c))}">
+                <p>
+                    
+                    <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD {0, Number, Currency}">
+                        <apex:param value="{!salesOrder.varcpq__Shipping_and_Handling__c}" />
+                    </apex:outputText>
+                </p>
+            </apex:outputpanel>
+            <p>
+               
+                <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="5%" />
+            </p>
+            <p>
+               
+                <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD {0, Number, Currency}">
+                                 <apex:param value="{!salesOrder.Taxes__c}" />
+                </apex:outputText>
+            </p>
+            <p style="border-top:2px solid black;">
+                
+                <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}" value="CAD {0, Number, Currency}">
+                                 <apex:param value="{!IF(ISNULL(salesOrder.varcpq__Total_Expected_Revenue__c), 0, salesOrder.varcpq__Total_Expected_Revenue__c) + 
+                       IF(ISNULL(salesOrder.Taxes__c), 0, salesOrder.Taxes__c)}" />
+                </apex:outputText>
+            </p>
+
+        </div>
+        <div class="column labels" style="margin-top:10px;">
+            <p>Sub Total:</p>
+            <apex:outputpanel rendered="{!NOT(ISBLANK(salesOrder.varcpq__Shipping_and_Handling__c))}">
+                <p>Shipping and Handling:</p>
+            </apex:outputpanel>
+            <p>Tax Rate:</p>
+            <p>Tax:</p>
+            <p style="border-top:2px solid black;">Total:</p>
+        </div>
+    </div>
+        
+    <!--<div class="section">
+        <div class="row">
+            <div class="col left" style="width: 96%;margin-top:15px;">
+                <apex:outputpanel rendered="{!NOT(ISBLANK(quote.varcpq__Customer_Notes__c))}">
+                    <p><strong>Customer Note</strong>: {!quote.varcpq__Customer_Notes__c}</p>
+                </apex:outputpanel>
+            </div>
+        </div>
+    </div>-->
+            
+    <div class="section footer" style="page-break-after:always;">
+        <br/>
+            <apex:outputText rendered="{!salesOrder.CurrencyIsoCode == 'CAD'}">
+                    <p>
+                <apex:outputText value="Currency is CAD unless noted otherwise." />
+                </p>
+                <br/>
+            </apex:outputText>
+        <p>If you are granted {!salesOrder.varcpq__Client__r.varcpq__NET_TERMS__c} payment terms, you agree that if you are late paying your invoice, a 1.5% finance charge or the maximum charge permitted by law may be assessed against all accounts with past due balances. You agree to pay all reasonable attorney’s fees and all collection agency fees incurred in the collection of any amount owed thereunder and not paid when due.</p>
+        <br/>
+        <div style="width:70%;"><p>GST/HST# 736342684 RT0001 // QST# 1226145814 TQ0002 // PST 7508781</p></div>
+        <div style="float:right;">Page <span id="pageNum"/></div>
+    </div>
+    </body>
+</apex:page>

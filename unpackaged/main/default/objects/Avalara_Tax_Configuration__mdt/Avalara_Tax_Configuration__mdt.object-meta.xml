@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Avalara Tax Configuration</label>
+    <pluralLabel>Avalara Tax Configurations</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

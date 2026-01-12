@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Operational_Margin</fullName>
+    <columns>NAME</columns>
+    <columns>Vendor__c</columns>
+    <columns>Amount__c</columns>
+    <columns>Order_PO_Number__c</columns>
+    <columns>Date__c</columns>
+    <columns>Invoice_Date__c</columns>
+    <columns>Geo__c</columns>
+    <columns>Notes__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>Operational Margin</value>
+    </filters>
+    <label>Operational Margin</label>
+    <sharedTo>
+        <group>Operations_Managers</group>
+    </sharedTo>
+</ListView>

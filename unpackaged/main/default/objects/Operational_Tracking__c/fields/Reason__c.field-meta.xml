@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason__c</fullName>
+    <label>Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Billing Email</fullName>
+                <default>false</default>
+                <label>Billing Email</label>
+            </value>
+            <value>
+                <fullName>Email Error</fullName>
+                <default>false</default>
+                <label>Email Error</label>
+            </value>
+            <value>
+                <fullName>EU Info</fullName>
+                <default>false</default>
+                <label>EU Info</label>
+            </value>
+            <value>
+                <fullName>Expired quote</fullName>
+                <default>false</default>
+                <label>Expired quote</label>
+            </value>
+            <value>
+                <fullName>Incorrect Supplier</fullName>
+                <default>false</default>
+                <label>Incorrect Supplier</label>
+            </value>
+            <value>
+                <fullName>Invalid line item</fullName>
+                <default>false</default>
+                <label>Invalid line item</label>
+            </value>
+            <value>
+                <fullName>Miscellaneous</fullName>
+                <default>false</default>
+                <label>Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>PO</fullName>
+                <default>false</default>
+                <label>PO</label>
+            </value>
+            <value>
+                <fullName>Rep Requested</fullName>
+                <default>false</default>
+                <label>Rep Requested</label>
+            </value>
+            <value>
+                <fullName>Serial Numbers Missing</fullName>
+                <default>false</default>
+                <label>Serial Numbers Missing</label>
+            </value>
+            <value>
+                <fullName>She requested as another  bill only orders was created for in the invoice.</fullName>
+                <default>false</default>
+                <label>She requested as another  bill only orders was created for in the invoice.</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

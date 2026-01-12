@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Only_Super_Authorized_users</fullName>
+    <active>true</active>
+    <description>Only Super Admins/Authorized users should be able to access this setting. Role=Controller and System Admins will have access.</description>
+    <errorConditionFormula>AND( NOT($Profile.Name = &quot;System Administrator&quot;), NOT($UserRole.Name = &quot;Controller&quot;), OR(ISCHANGED( Days_AR_Issue_Date_Remain_Open__c ), ISCHANGED( AP_Closed_Books_Date__c )) )</errorConditionFormula>
+    <errorMessage>Only Controllers can modify accounting configuration settings</errorMessage>
+</ValidationRule>

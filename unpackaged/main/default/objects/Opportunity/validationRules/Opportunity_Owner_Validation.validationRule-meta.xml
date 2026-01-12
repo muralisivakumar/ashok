@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Opportunity_Owner_Validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+$Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+OR(
+ISBLANK(Owner.UserRoleId),
+
+NOT(
+CONTAINS(
+UPPER(Owner.UserRole.Name),
+&quot;ACCOUNT EXEC&quot;
+)
+)
+)
+)</errorConditionFormula>
+    <errorMessage>Only Account Executives are allowed to be the owner of an opportunity</errorMessage>
+</ValidationRule>

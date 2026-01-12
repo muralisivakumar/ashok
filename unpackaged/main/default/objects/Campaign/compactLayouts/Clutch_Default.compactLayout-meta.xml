@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Clutch_Default</fullName>
+    <fields>Name</fields>
+    <fields>Type</fields>
+    <fields>Status</fields>
+    <fields>StartDate</fields>
+    <fields>EndDate</fields>
+    <fields>Total_MDF_Allocated__c</fields>
+    <fields>Approved_Expenses__c</fields>
+    <fields>Expenses_Pending_Approval__c</fields>
+    <label>Clutch Default</label>
+</CompactLayout>

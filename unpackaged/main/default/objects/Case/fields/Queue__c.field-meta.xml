@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Queue__c</fullName>
+    <label>Queue</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+                <label>Unknown</label>
+            </value>
+            <value>
+                <fullName>Multiple</fullName>
+                <default>false</default>
+                <label>Multiple</label>
+            </value>
+            <value>
+                <fullName>Accounting CA</fullName>
+                <default>false</default>
+                <label>Accounting CA</label>
+            </value>
+            <value>
+                <fullName>Accounting US</fullName>
+                <default>false</default>
+                <label>Accounting US</label>
+            </value>
+            <value>
+                <fullName>Invoices CA</fullName>
+                <default>false</default>
+                <label>Invoices CA</label>
+            </value>
+            <value>
+                <fullName>Invoices US</fullName>
+                <default>false</default>
+                <label>Invoices US</label>
+            </value>
+            <value>
+                <fullName>Operations CA</fullName>
+                <default>false</default>
+                <label>Operations CA</label>
+            </value>
+            <value>
+                <fullName>Operations US</fullName>
+                <default>false</default>
+                <label>Operations US</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

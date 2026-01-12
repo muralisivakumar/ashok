@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason__c</fullName>
+    <label>Reason</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Billing email</fullName>
+                <default>false</default>
+                <label>Billing email</label>
+            </value>
+            <value>
+                <fullName>EU info</fullName>
+                <default>false</default>
+                <label>EU info</label>
+            </value>
+            <value>
+                <fullName>Incorrect supplier</fullName>
+                <default>false</default>
+                <label>Incorrect supplier</label>
+            </value>
+            <value>
+                <fullName>OEM defect</fullName>
+                <default>false</default>
+                <label>OEM defect</label>
+            </value>
+            <value>
+                <fullName>PO</fullName>
+                <default>false</default>
+                <label>PO</label>
+            </value>
+            <value>
+                <fullName>Rep Request</fullName>
+                <default>false</default>
+                <label>Rep Request</label>
+            </value>
+            <value>
+                <fullName>Serial Numbers Missing</fullName>
+                <default>false</default>
+                <label>Serial Numbers Missing</label>
+            </value>
+            <value>
+                <fullName>Cust PO Missing</fullName>
+                <default>false</default>
+                <label>Cust PO Missing</label>
+            </value>
+            <value>
+                <fullName>EU Info  and no Cust PO attached</fullName>
+                <default>false</default>
+                <label>EU Info  and no Cust PO attached</label>
+            </value>
+            <value>
+                <fullName>EU Info and Billing email</fullName>
+                <default>false</default>
+                <label>EU Info and Billing email</label>
+            </value>
+            <value>
+                <fullName>EU Info or Cust PO attached</fullName>
+                <default>false</default>
+                <label>EU Info or Cust PO attached</label>
+            </value>
+            <value>
+                <fullName>EU Info x2</fullName>
+                <default>false</default>
+                <label>EU Info x2</label>
+            </value>
+            <value>
+                <fullName>Expired quote</fullName>
+                <default>false</default>
+                <label>Expired quote</label>
+            </value>
+            <value>
+                <fullName>HPE off channel</fullName>
+                <default>false</default>
+                <label>HPE off channel</label>
+            </value>
+            <value>
+                <fullName>invalid line item</fullName>
+                <default>false</default>
+                <label>invalid line item</label>
+            </value>
+            <value>
+                <fullName>Missing Dell Direct Quote</fullName>
+                <default>false</default>
+                <label>Missing Dell Direct Quote</label>
+            </value>
+            <value>
+                <fullName>no billing email</fullName>
+                <default>false</default>
+                <label>no billing email</label>
+            </value>
+            <value>
+                <fullName>no PO</fullName>
+                <default>false</default>
+                <label>no PO</label>
+            </value>
+            <value>
+                <fullName>no supplier</fullName>
+                <default>false</default>
+                <label>no supplier</label>
+            </value>
+            <value>
+                <fullName>No Supplier Selected</fullName>
+                <default>false</default>
+                <label>No Supplier Selected</label>
+            </value>
+            <value>
+                <fullName>Wrong Supplier selected</fullName>
+                <default>false</default>
+                <label>Wrong Supplier selected</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

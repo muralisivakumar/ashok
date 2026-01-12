@@ -1,0 +1,2 @@
+<apex:page standardController="varcpq__Purchase_Order__c" extensions="POTaxCalculator" action="{!calculateTaxButton}">
+</apex:page>

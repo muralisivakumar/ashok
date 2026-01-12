@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closed_Won_Opportunity</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+$Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+
+NOT($Permission.Bypass_opportunity_validation),
+
+ISPICKVAL(Opportunity.StageName, &quot;Closed Won&quot;)
+)</errorConditionFormula>
+    <errorMessage>Opportunity stage is &#39;Closed Won&#39;. Opportunity Split cannot be created/updated.</errorMessage>
+</ValidationRule>

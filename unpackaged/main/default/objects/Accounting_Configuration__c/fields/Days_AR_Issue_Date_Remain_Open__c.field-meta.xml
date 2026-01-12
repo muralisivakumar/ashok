@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Days_AR_Issue_Date_Remain_Open__c</fullName>
+    <description>This is an integer that stores the number of business days AR Issued Dates will remain open for back dating into the previous month. Example: When set to 5, a user can set the an Issue Date to a date in the previous month until the 6th business day of the following month. At that time, Issue dates can no longer be set to the previous month.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This is an integer that stores the number of business days AR Issued Dates will remain open for back dating into the previous month. Example: When set to 5, a user can set the an Issue Date to a date in the previous month until the 6th business day of the following month. At that time, Issue dates can no longer be set to the previous month.</inlineHelpText>
+    <label>Days AR Issue Date Remain Open</label>
+    <precision>18</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

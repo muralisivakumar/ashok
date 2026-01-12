@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Partner_Tier_Reason__c</fullName>
+    <description>Reason(s) we have tiered this Partner the way we have</description>
+    <label>Partner Tier Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Engineering Expertise</fullName>
+                <default>false</default>
+                <label>Engineering Expertise</label>
+            </value>
+            <value>
+                <fullName>Marketing Capabilities</fullName>
+                <default>false</default>
+                <label>Marketing Capabilities</label>
+            </value>
+            <value>
+                <fullName>MDF</fullName>
+                <default>false</default>
+                <label>MDF</label>
+            </value>
+            <value>
+                <fullName>Rebates/Incentives</fullName>
+                <default>false</default>
+                <label>Rebates/Incentives</label>
+            </value>
+            <value>
+                <fullName>Sales</fullName>
+                <default>false</default>
+                <label>Sales</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

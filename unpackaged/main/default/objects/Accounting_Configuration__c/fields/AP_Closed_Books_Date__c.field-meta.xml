@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AP_Closed_Books_Date__c</fullName>
+    <description>This is a date field that stores the Date that AP Dates can be set back to.Example: When set to June 30th, 2025, a user can update an AP Date received date as far back as July 1, 2025. Validation Rules will block the ability to set an AP Date before this date.</description>
+    <inlineHelpText>This is a date field that stores the Date that AP Dates can be set back to.Example: When set to June 30th, 2025, a user can update an AP Date received date as far back as July 1, 2025. Validation Rules will block the ability to set an AP Date before this date.</inlineHelpText>
+    <label>AP Closed Books Date</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

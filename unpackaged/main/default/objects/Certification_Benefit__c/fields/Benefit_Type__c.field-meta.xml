@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Benefit_Type__c</fullName>
+    <label>Benefit Type</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Backend Rebate</fullName>
+                <default>false</default>
+                <label>Backend Rebate</label>
+            </value>
+            <value>
+                <fullName>Deal_Registration_Percentage_Off_List_Price</fullName>
+                <default>false</default>
+                <label>Deal Registration Percentage Off List Price</label>
+            </value>
+            <value>
+                <fullName>Discount_Percentage_Off_List_Price</fullName>
+                <default>false</default>
+                <label>Discount Percentage Off List Price</label>
+            </value>
+            <value>
+                <fullName>Email Generation</fullName>
+                <default>false</default>
+                <label>Email Generation</label>
+            </value>
+            <value>
+                <fullName>Lead Generation</fullName>
+                <default>false</default>
+                <label>Lead Generation</label>
+            </value>
+            <value>
+                <fullName>MDF</fullName>
+                <default>false</default>
+                <label>MDF</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

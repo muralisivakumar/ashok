@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Deal_Reg__c</fullName>
+    <label>Active Deal Reg</label>
+    <summaryFilterItems>
+        <field>varcpq__Registration__c.varcpq__Status__c</field>
+        <operation>notEqual</operation>
+        <value>Expired, Closed, Rejected</value>
+    </summaryFilterItems>
+    <summaryForeignKey>varcpq__Registration__c.varcpq__Opportunity__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

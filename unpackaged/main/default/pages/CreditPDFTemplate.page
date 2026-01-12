@@ -1,0 +1,869 @@
+<apex:page controller="ManualCreditMemoPDFController" applyBodyTag="false" showHeader="false" sidebar="false" renderAs="pdf">
+    <head>
+        <style>
+            /* Basic page setup */
+            @page {
+                size: {!pageOrientation};
+                margin: 0.5in 0.5in 1.7in 0.5in;
+                counter-increment: page;
+                @bottom-center {
+                    content: element(footer);
+                    width: 100%;
+                }
+            }
+            
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+            }
+
+            p {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            /* Table-based layout for PDF compatibility */
+            table {
+                border-collapse: collapse;
+            }
+            
+            /* Header table layout */
+            .header-table {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .header-table td {
+                vertical-align: top;
+                padding: 0;
+            }
+            
+            /* Company info styling */
+            .company-info {
+                font-size: 11px;
+            }
+            
+            .company-info p {
+                margin: 0;
+                line-height: 1.4;
+            }
+            
+            /* Invoice title */
+            .invoice-title {
+                font-size: 20pt;
+                font-weight: bold;
+                text-align: right;
+            }
+            
+            /* Invoice info table */
+            .invoice-info {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+            }
+            
+            .invoice-info td {
+                padding: 4px 8px;
+                border: 1px solid #ccc;
+                font-size: 11px;
+            }
+            
+            .invoice-info td.label {
+                font-weight: bold;
+                background-color: #f5f5f5;
+                width: 40%;
+            }
+            
+            /* Sales rep info */
+            .sales-rep-info {
+                text-align: right;
+                font-size: 11px;
+                margin-top: 10px;
+            }
+            
+            /* Address boxes */
+            .address-table {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .address-table td {
+                width: 32%;
+                vertical-align: top;
+                padding: 0 5px;
+            }
+            
+            .address-table td:first-child {
+                padding-left: 0;
+            }
+            
+            .address-table td:last-child {
+                padding-right: 0;
+            }
+            
+            /* Info box styling */
+            .info-box {
+                border: 1px solid #ccc;
+                background-color: #f5f5f5;
+                padding: 5px 6px 6px;
+                font-size: 11px;
+            }
+
+            .info-box h3 {
+                margin: 0 0 2px 0;
+                padding: 0 0 2px 0;
+                border-bottom: 1px solid #ddd;
+                font-size: 14px;
+            }
+            
+            /* Order info table */
+            .invoice-info-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 15px;
+                font-size: 11px;
+            }
+            
+            .invoice-info-table th {
+                background-color: #8DAEC1;
+                color: white;
+                text-align: left;
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            .invoice-info-table td {
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            /* Line items table styling */
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+                margin-bottom: 20px;
+            }
+            
+            .table th {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                padding: 6px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            
+            .table td {
+                padding: 6px;
+                border: 1px solid #ccc;
+                vertical-align: top;
+                /* Add word wrapping for most columns */
+                word-wrap: break-word;
+                word-break: break-word;
+            }
+            
+            /* Prevent wrapping for currency columns */
+            .table td.no-wrap {
+                white-space: nowrap;
+                word-wrap: normal;
+                word-break: normal;
+            }
+            
+            .table tr.even {
+                background-color: #f9f9f9;
+            }
+            
+            /* Group header and subtotal */
+            .group-header {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                font-size: 12px;
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-bottom: none;
+            }
+            
+            .group-subtotal {
+                background-color: #f3f3f3;
+                font-weight: bold;
+            }
+            
+            /* Totals section */
+            .totals-wrapper {
+                width: 100%;
+                clear: both;
+            }
+            
+            .totals-table {
+                width: 350px;
+                float: right;
+                border-collapse: collapse;
+                margin-top: 15px;
+            }
+            
+            .totals-table tr {
+                height: 22px;
+            }
+            
+            .totals-table td {
+                font-size: 11px;
+                padding: 3px 5px;
+            }
+            
+            .total-label {
+                text-align: right;
+                padding-right: 10px;
+            }
+            
+            .total-value {
+                text-align: right;
+                width: 120px;
+            }
+            
+            td.grand-total {
+                font-weight: bold;
+                border-top: 2px solid #000;
+                padding-top: 8px;
+                font-size: 12px;
+            }
+            
+            /* Shipping table styling */
+            .shipping-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+            }
+            
+            .shipping-table th {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                padding: 6px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            
+            .shipping-table td {
+                padding: 6px;
+                border: 1px solid #ccc;
+                vertical-align: top;
+            }
+            
+            .shipping-table tr.even {
+                background-color: #f9f9f9;
+            }
+            
+            /* Footer styling */
+            .footer {
+                position: running(footer);
+                width: 100%;
+                font-size: 8px;
+                color: #666;
+                padding-top: 6px;
+                margin: 0;
+            }
+
+            .footer-content {
+                width: 100%;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }
+
+            .footer-disclaimer {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .footer-disclaimer p {
+                margin: 0;
+                line-height: 1.3;
+            }
+            
+
+            .footer-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .footer-table td {
+                padding: 0;
+                vertical-align: top;
+            }
+			
+            .footer-left {
+                text-align: left;
+                width: 70%;
+            }
+
+            .footer-right {
+                text-align: right;
+                width: 30%;
+            }
+            
+            /* Fixed page number display */
+            #pageNum:after {
+                content: counter(page);
+            }
+            
+            /* Section spacing */
+            .section {
+                margin-bottom: 20px;
+            }
+            
+            /* Clear floats */
+            .clear {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header Section -->
+        <div id="header" class="section">
+            <!-- Top Row: Logo and Invoice Title -->
+            <table class="header-table">
+                <tr>
+                    <td width="33%">
+                        <apex:outputPanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                            <apex:image id="logoCA" value="{!$Resource.LogoCA}" width="200"/>   
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!account.RecordType.Name == 'US Account'}">
+                            <apex:image id="logoUS" value="{!$Resource.LogoUS}" width="225"/>   
+                        </apex:outputPanel>
+                    </td>
+                    <td width="33%">
+                        <!-- Empty middle column -->
+                    </td>
+                    <td width="34%">
+                        <div class="invoice-title">Credit Memo {!creditMemo.Name}</div>
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- Bottom Row: Company Info, Remit To, and Invoice Details -->
+            <table class="header-table">
+                <tr>
+                    <!-- Company Info - Made wider -->
+                    <td width="28%" style="padding-right: 10px;">
+                        <div class="company-info">
+                            <p>
+                                <strong>{!companyInfo.name}</strong><br/>
+                                {!companyInfo.street}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.suite))}">
+                                    {!companyInfo.suite}<br/>
+                                </apex:outputPanel>
+                                {!companyInfo.cityStateZip}<br/>
+                                Phone: {!companyInfo.phone}<br/>
+                                <apex:outputText value="{!companyInfo.website}" />
+                            </p>
+                        </div>
+                    </td>
+                    
+                    <!-- Remit Payment To -->
+                    <td width="28%" style="padding-right: 10px;">
+                        <div class="company-info">
+                            <p>
+                                <strong>Remit Payment To</strong><br/>
+                                {!companyInfo.remitToName}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.remitToAttnTo))}">
+                                    {!companyInfo.remitToAttnTo}<br/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.RemitToAddress1))}">
+                                    {!companyInfo.RemitToAddress1}<br/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.RemitToAddress2))}">
+                                    {!companyInfo.RemitToAddress2}<br/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.RemitToCityStateZip))}">
+                                    {!companyInfo.RemitToCityStateZip}<br/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.RemitToPhone))}">
+                                    Phone: {!companyInfo.RemitToPhone}<br/>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.invoiceReplyToEmail))}">
+                                    <apex:outputText value="{!companyInfo.invoiceReplyToEmail}" />
+                                </apex:outputPanel>
+                            </p>
+                        </div>
+                    </td>
+                    
+                    <!-- Spacer -->
+                    <td width="2%">
+                        <!-- Empty spacer -->
+                    </td>
+                    
+                    <!-- Invoice Details Table -->
+                    <td width="42%">
+                        <table class="invoice-info">
+                            <tr>
+                                <td class="label">Order #</td>
+                                <td>{!invoice.varcpq__Sales_Order__r.varcpq__SO_Number__c}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Terms</td>
+                                <td>{!invoice.varcpq__Terms__c}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Contact</td>
+                                <td>{!invoice.Bill_to_Name__c}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Credit Memo Date</td>
+                                <td>
+                                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                        <apex:param value="{!creditMemo.CreatedDate}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                           <!-- <tr>
+                                <td class="label">Invoice Due Date</td>
+                                <td>
+                                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                        <apex:param value="{!invoice.varcpq__Due_Date__c}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>-->
+                        </table>
+                        
+                        <div class="sales-rep-info">
+                            <strong>Sales Rep:</strong> {!account.Owner.Name}<br/>
+                            <apex:outputText value="{!account.Owner.Email}" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Address Section -->
+        <div class="section">
+            <table class="address-table">
+                <tr>
+                    <td>
+                        <div class="info-box">
+                            <h3>Customer</h3>
+                            <p>
+                                {!invoice.Bill_to_Company_Name__c}<br/>
+                                {!invoice.Bill_to_Name__c}<br/>
+                                {!invoice.Bill_to_Street__c}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Bill_to_Additional_Street__c))}">
+                                    {!invoice.Bill_to_Additional_Street__c}<br/>
+                                </apex:outputPanel>
+                                {!invoice.Bill_to_City__c}, {!invoice.Bill_to_State__c} {!invoice.Bill_to_zipcode__c}<br/>
+                                {!invoice.Bill_to_Phone__c}<br/>
+                                <apex:outputText value="{!invoice.Bill_to_Email__c}" rendered="{!NOT(ISBLANK(invoice.Bill_to_Email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="info-box">
+                            <h3>Bill To</h3>
+                            <p>
+                                {!invoice.Bill_to_Company_Name__c}<br/>
+                                {!invoice.Bill_to_Name__c}<br/>
+                                {!invoice.Bill_to_Street__c}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Bill_to_Additional_Street__c))}">
+                                    {!invoice.Bill_to_Additional_Street__c}<br/>
+                                </apex:outputPanel>
+                                {!invoice.Bill_to_City__c}, {!invoice.Bill_to_State__c} {!invoice.Bill_to_zipcode__c}<br/>
+                                {!invoice.Bill_to_Phone__c}<br/>
+                                <apex:outputText value="{!invoice.Bill_to_Email__c}" rendered="{!NOT(ISBLANK(invoice.Bill_to_Email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="info-box">
+                            <h3>Ship To</h3>
+                            <p>
+                                {!invoice.Ship_to_Company_Name__c}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Additional_Ship_To_Header__c))}">
+                                    {!invoice.Additional_Ship_To_Header__c}<br/>
+                                </apex:outputPanel>
+                                Attn: {!invoice.Ship_to_Name__c}<br/>
+                                {!invoice.Ship_to_Street__c}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(invoice.Ship_to_Additional_Street__c))}">
+                                    {!invoice.Ship_to_Additional_Street__c}<br/>
+                                </apex:outputPanel>
+                                {!invoice.Ship_to_city__c}, {!invoice.Ship_to_State__c} {!invoice.Ship_to_zipcode__c}<br/>
+                                {!invoice.Ship_to_Phone__c}<br/>
+                                <apex:outputText value="{!invoice.Ship_to_Email__c}" rendered="{!NOT(ISBLANK(invoice.Ship_to_Email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- Order Info Row -->
+            <table class="invoice-info-table">
+                <tr>
+                    <th>Description</th>
+                    <th>Customer PO</th>
+                    <th>Contract</th>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="RMA for Order# {!rma.Related_Sales_Order__r.varcpq__SO_Number__c}" rendered="{!NOT(ISBLANK(rma.Id))}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!rma.Related_Sales_Order__r.varcpq__Customer_PO__c}" rendered="{!NOT(ISBLANK(rma.Related_Sales_Order__r.varcpq__Customer_PO__c))}" />
+                    </td>
+                    <td>
+                       <apex:outputText value="{!rma.Related_Sales_Order__r.varcpq__Contract_Number__c}" rendered="{!NOT(ISBLANK(rma.Related_Sales_Order__r.varcpq__Contract_Number__c))}" />
+                    </td>
+                </tr>
+            </table>
+            
+           <!-- Default table (no groups) -->
+            <apex:outputPanel >
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:4%;text-align:center;">#</th>
+                            <th style="width:15%;">Mfg</th>
+                            <th style="width:10%;">Mfg Part #</th>
+                            <th style="width:5%;text-align:center;">Qty</th>
+                            <th>Description</th>
+                            <th style="width:13%;text-align:right;">Price</th>
+                            <th style="width:13%;text-align:right;">Extended Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:variable var="rowCount" value="{!0}"/>
+                        <apex:repeat value="{!rmaLineItems}" var="line">
+                            <apex:variable var="rowCount" value="{!rowCount + 1}"/>
+                            <tr class="{!IF(MOD(rowCount, 2) = 0, 'even', 'odd')}">
+                                <td style="text-align:center;">
+                                    <apex:outputText value="{!rowCount}"/>
+                                </td>
+                            <!--    <td style="text-align:center;">
+                                    <apex:outputText value="{0, number, 0}">
+                                        <apex:param value="{!line.varcpq__DH_Line__c}" />
+                                    </apex:outputText>
+                                </td>-->
+                                <td>{!line.Product__r.varcpq__Manufacturer__r.Name}</td>
+                                <td>
+                                 <!--   <apex:outputText escape="false" value="{!SUBSTITUTE(line.Product__r.Name, '-', '-<wbr/>')}"/>-->
+                                    <apex:outputText value="{!IF(LEN(line.Product__r.Name) > 10,
+                                        LEFT(line.Product__r.Name, 10) + '<br/>' + 
+                                        IF(LEN(line.Product__r.Name) > 20,
+                                          MID(line.Product__r.Name, 11, 10) + '<br/>' + 
+                                          MID(line.Product__r.Name, 21, 100),
+                                          MID(line.Product__r.Name, 11, 100)
+                                        ),
+                                        line.Product__r.Name
+                                      )}" escape="false" />
+                                </td>
+                                <td style="text-align:center;">
+                                    <apex:outputText value="{0, number, 0}">
+                                        <apex:param value="{!line.Quantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <!--<td>{!line.Product__r.Description}</td>-->
+                                <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+                                <!--<td style="width:130px; word-wrap: break-word; word-break: break-word;">
+                                    <apex:repeat value="{!lineItemDescriptionChunks[line.Id]}" var="lineChunk">
+                                        <div>{!lineChunk}</div>
+                                    </apex:repeat>
+                                </td>-->
+                                <td style="width:130px;">
+                                    <apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" />
+                                </td>
+                                <td class="no-wrap" style="text-align:right;">
+                                    <apex:outputText rendered="{!invoice.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                        <apex:param value="{!line.Unit_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!invoice.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                        <apex:param value="{!line.Unit_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td class="no-wrap" style="text-align:right;">
+                                    <apex:outputText rendered="{!invoice.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                        <apex:param value="{!line.Total_Ext_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!invoice.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                        <apex:param value="{!line.Total_Ext_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+            
+            
+              
+            
+            <!-- Totals Section -->
+            <div class="totals-wrapper">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Sub Total:</td>
+                        <td class="total-value">
+                            <apex:outputText rendered="{!rma.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                <apex:param value="{!rma.Total_Amount__c}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!rma.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                <apex:param value="{!rma.Total_Amount__c}" /> 
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <!-- GST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(rma.CurrencyIsoCode == 'CAD', rma.Tax_Amount_GST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!rma.Tax_Amount_GST__c > 0}" value="GST ({0, number, 0.00}%):">
+                                    <apex:param value="{!rma.Tax_Rate_GST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!rma.Tax_Amount_GST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!rma.Tax_Amount_GST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- PST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(rma.CurrencyIsoCode == 'CAD', rma.Tax_Amount_PST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!rma.Tax_Amount_PST__c > 0}" value="PST ({0, number, 0.00}%):">
+                                    <apex:param value="{!rma.Tax_Rate_PST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!rma.Tax_Amount_PST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!rma.Tax_Amount_PST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- HST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(rma.CurrencyIsoCode == 'CAD', rma.Tax_Amount_HST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!rma.Tax_Amount_HST__c > 0}" value="HST ({0, number, 0.00}%):">
+                                    <apex:param value="{!rma.Tax_Rate_HST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!rma.Tax_Amount_HST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!rma.Tax_Amount_HST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- QST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(rma.CurrencyIsoCode == 'CAD', rma.Tax_Amount_QST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!rma.Tax_Amount_QST__c > 0}" value="QST ({0, number, 0.00}%):">
+                                    <apex:param value="{!rma.Tax_Rate_QST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!rma.Tax_Amount_QST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!rma.Tax_Amount_QST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(creditMemo.Taxes__c)), creditMemo.Taxes__c != 0 )}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!AND(rma.CurrencyIsoCode == 'USD', creditMemo.Taxes__c > 0)}" value="Tax ({0, number,0.000'%'}):">
+                                    <apex:param value="{!creditMemo.Tax_Rate__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!AND(rma.CurrencyIsoCode == 'USD', creditMemo.Taxes__c > 0)}" value="{0, number, Currency}">
+                                    <apex:param value="{!creditMemo.Taxes__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(creditMemo.RMA_Shipping_Refund__c)), creditMemo.RMA_Shipping_Refund__c != 0)}">
+                        <tr> 
+                            <td class="total-label">Shipping and Handling:</td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                    <apex:param value="{!creditMemo.RMA_Shipping_Refund__c}" />
+                                </apex:outputText>
+                                <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                    <apex:param value="{!creditMemo.RMA_Shipping_Refund__c}" />
+                                </apex:outputText> 
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(creditMemo.RMA_Restocking_Fee__c)), creditMemo.RMA_Restocking_Fee__c != 0)}">
+                        <tr> 
+                            <td class="total-label">Restocking Fee: </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'USD'}" value="- {0, number, Currency}">
+                                    <apex:param value="{!creditMemo.RMA_Restocking_Fee__c}" />
+                                </apex:outputText>
+                                <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'CAD'}" value="- CAD {0, number, Currency}">
+                                    <apex:param value="{!creditMemo.RMA_Restocking_Fee__c}" />
+                                </apex:outputText> 
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <tr>
+                        <td class="total-label grand-total">Total:</td>
+                        <td class="total-value grand-total">
+                            <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                <apex:param value="{!creditMemo.Grand_Total__c}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                <apex:param value="{!creditMemo.Grand_Total__c}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+         <apex:outputPanel rendered="{!NOT(ISNULL(customerNotes)) && customerNotes.size > 0}">
+            <div class="section" style="margin-top:20px;">
+                
+                <apex:repeat value="{!customerNotes}" var="note">
+                    <div class="row" style="margin-top:10px;">
+                        <b>{!note.label}:</b><br/>
+                        <apex:outputText value="{!note.text}" escape="false" />
+                    </div>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>
+
+        <!-- Shipping and Asset Tracking Section -->
+        <!--Commented as part of #84 ASN by Vishnu S on 6/Jan/26-->
+        <!--
+        <apex:outputPanel rendered="{!NOT(ISBLANK(shippingAndAssetTracking)) && shippingAndAssetTracking.size > 0}">
+            <div class="section" style="margin-top:20px;">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:10px;">Shipping and Asset Tracking Information</div>
+                <table class="shipping-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;">Part Number</th>
+                            <th style="width:15%;">Shipping Method</th>
+                            <th style="width:20%;">Tracking Number</th>
+                            <th style="width:12%;">Ship Date</th>
+                            <th style="width:38%;">Serial Numbers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:variable var="shipRowCount" value="{!0}"/>
+                        <apex:repeat value="{!shippingAndAssetTracking}" var="track">
+                            <apex:variable var="shipRowCount" value="{!shipRowCount + 1}"/>
+                            <tr class="{!IF(MOD(shipRowCount, 2) = 0, 'even', 'odd')}">
+                                <td style="white-space:nowrap;">{!track.Part_Number__c}</td>
+                                <td>{!track.Shipping_Method__c}</td>
+                                <td style="white-space:nowrap;">{!track.Tracking_Number__c}</td>
+                                <td style="white-space:nowrap;">
+                                    <apex:outputText value="{0, date, MMM d, yyyy}" rendered="{!NOT(ISBLANK(track.Ship_Date__c))}">
+                                        <apex:param value="{!track.Ship_Date__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="word-wrap:break-word; word-break:break-all; white-space:pre-line;">
+                                    <apex:outputText value="{!track.Serial_Numbers__c}" />
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel>
+         -->
+        <!-- Shipment Tracking  -->
+        <apex:outputPanel rendered="{!NOT(ISBLANK(shipmentTracking)) && shipmentTracking.size > 0}">
+            <div class="section" style="margin-top:20px;">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:10px;">Shipping and Asset Tracking Information</div>
+                <table class="shipping-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;">Part Number</th>
+                            <th style="width:15%;">Shipping Method</th>
+                            <th style="width:20%;">Tracking Number</th>
+                            <th style="width:12%;">Ship Date</th>
+                            <th style="width:38%;">Serial Numbers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:variable var="shipRowCount" value="{!0}"/>
+                        <apex:repeat value="{!shipmentTracking}" var="track">
+                            <apex:variable var="shipRowCount" value="{!shipRowCount + 1}"/>
+                            <tr class="{!IF(MOD(shipRowCount, 2) = 0, 'even', 'odd')}">
+                                <td style="white-space:nowrap;">{!track.Part_Number__c}</td>
+                                <td>{!track.Shipping_Method__c}</td>
+                                <td style="white-space:nowrap;">{!track.Tracking_Number__c}</td>
+                                <td style="white-space:nowrap;">
+                                    <apex:outputText value="{0, date, MMM d, yyyy}" rendered="{!NOT(ISBLANK(track.Ship_Date__c))}">
+                                        <apex:param value="{!track.Ship_Date__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="word-wrap:break-word; word-break:break-all; white-space:pre-line;">
+                                    <apex:outputText value="{!track.Serial_Numbers__c}" />
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </apex:outputPanel>
+         
+        <!-- THE FOOTER -->
+        <div class="footer" id="footer">
+            <div class="footer-content">
+                <div class="footer-disclaimer">
+                    <apex:outputPanel rendered="{!account.RecordType.Name == 'US Account'}">
+                        <p>
+                            Clutch Solutions and its divisions are a Recognized Native Minority Business Enterprise (MBE) with National Minority Supplier Development
+                            Council (NMSDC) and a Proud Valued TRIBALHUB member with the TribalHub divisions.<br/>
+
+                            <strong>ACH Payment Info:</strong><br/>
+                            BMO Bank NA<br/>
+                            Account Number: 2108769<br/>
+                            Routing Number: 071000288<br/>
+                            TAX ID: 82-1692602<br/><br/>
+
+                            By ordering through Clutch Solutions you agree to our standard terms and conditions available at:
+                            https://clutchsolutions.com/terms-and-conditions/<br/>
+
+                            <strong>Return Policy:</strong> All returns must be requested within 30 days of receipt and are subject to manufacturer approval. No refunds after 30 days.<br/>
+                            If you are granted "Net-##" payment terms, you agree that if you are late paying your invoice, a 1.5% finance charge or the maximum
+                            charge permitted by law may be assessed against all accounts with past due balances. You agree to pay all the company's reasonable
+                            attorney's fees and all collection agency fees incurred in the collection of any amount owed thereunder and not paid when due.
+                        </p>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                        <p>
+                            Currency is CAD unless noted otherwise.<br/>
+
+                            If you are granted "{!invoice.varcpq__Terms__c}" payment terms, you agree that if you are late paying your invoice, a 1.5% finance charge or the maximum
+                            charge permitted by law may be assessed against all accounts with past due balances. You agree to pay all the company's reasonable
+                            attorney's fees and all collection agency fees incurred in the collection of any amount owed thereunder and not paid when due.
+                        </p>
+                    </apex:outputPanel>
+                </div>
+                <table class="footer-table">
+                    <tr>
+                        <td class="footer-left">
+                            <apex:outputText rendered="{!creditMemo.CurrencyIsoCode == 'CAD'}">
+                                GST/HST# 736342684 RT0001 // QST# 1226145814 TQ0002 // PST 7508781
+                            </apex:outputText>
+                        </td>
+                        <td class="footer-right">
+                            Credit Memo #{!creditMemo.Name} &nbsp;&nbsp;&nbsp; Page <span id="pageNum"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</apex:page>

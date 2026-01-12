@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Approved_Expenses__c</fullName>
+    <label>Approved Expenses</label>
+    <summarizedField>Expense_Tracking__c.Requested_Amount__c</summarizedField>
+    <summaryFilterItems>
+        <field>Expense_Tracking__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Approved</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Expense_Tracking__c.Campaign__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>true</sorted>
+    <standardValue>
+        <fullName>Accepted Calendar Invite</fullName>
+        <default>false</default>
+        <label>Accepted Calendar Invite</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Accepted Teams Invite</fullName>
+        <default>false</default>
+        <label>Accepted Teams Invite</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Accounting Inquiry, Sent to Accounting</fullName>
+        <default>false</default>
+        <label>Accounting Inquiry, Sent to Accounting</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Agreed to a meeting</fullName>
+        <default>false</default>
+        <label>Agreed to a meeting</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Application Resource/Contact</fullName>
+        <default>false</default>
+        <label>Application Resource/Contact</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Assigned, Working</fullName>
+        <default>false</default>
+        <label>Assigned, Working</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Attendance</fullName>
+        <default>false</default>
+        <label>Attendance</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Attended</fullName>
+        <default>false</default>
+        <label>Attended</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Attended Happy Hour</fullName>
+        <default>false</default>
+        <label>Attended Happy Hour</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Attendee List Registrant</fullName>
+        <default>false</default>
+        <label>Attendee List Registrant</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Award Application Resource</fullName>
+        <default>false</default>
+        <label>Award Application Resource</label>
+    </standardValue>
+    <standardValue>
+        <fullName>BANT Lead</fullName>
+        <default>false</default>
+        <label>BANT Lead</label>
+    </standardValue>
+    <standardValue>
+        <fullName>BANT LEAD TAGGED = Qualified</fullName>
+        <default>false</default>
+        <label>BANT LEAD TAGGED = Qualified</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Being Worked</fullName>
+        <default>false</default>
+        <label>Being Worked</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Bronze</fullName>
+        <default>false</default>
+        <label>Bronze</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Bronze - Early Bird</fullName>
+        <default>false</default>
+        <label>Bronze - Early Bird</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Canceled</fullName>
+        <default>false</default>
+        <label>Canceled</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Clutch Employee</fullName>
+        <default>false</default>
+        <label>Clutch Employee</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Confirmed &amp; Invoiced</fullName>
+        <default>false</default>
+        <label>Confirmed &amp; Invoiced</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Connected</fullName>
+        <default>false</default>
+        <label>Connected</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Customer</fullName>
+        <default>false</default>
+        <label>Customer</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Diamond</fullName>
+        <default>false</default>
+        <label>Diamond</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Diamond - Early Bird</fullName>
+        <default>false</default>
+        <label>Diamond - Early Bird</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Email Sent</fullName>
+        <default>false</default>
+        <label>Email Sent</label>
+    </standardValue>
+    <standardValue>
+        <fullName>End User Missed Meeting</fullName>
+        <default>false</default>
+        <label>End User Missed Meeting</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Engaged In Email Campaign</fullName>
+        <default>false</default>
+        <label>Engaged In Email Campaign</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Engaged with Webinar</fullName>
+        <default>false</default>
+        <label>Engaged with Webinar</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Fraud/Spam</fullName>
+        <default>false</default>
+        <label>Fraud/Spam</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Hiring Inquiry</fullName>
+        <default>false</default>
+        <label>Hiring Inquiry</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Hole Sponsor</fullName>
+        <default>false</default>
+        <label>Hole Sponsor</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inquiry Submitted</fullName>
+        <default>false</default>
+        <label>Inquiry Submitted</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Invited</fullName>
+        <default>false</default>
+        <label>Invited</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Linkedin Confirmation, No Email Response</fullName>
+        <default>false</default>
+        <label>Linkedin Confirmation, No Email Response</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Meeting Arranged</fullName>
+        <default>false</default>
+        <label>Meeting Arranged</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Meeting Booked</fullName>
+        <default>false</default>
+        <label>Meeting Booked</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Meeting Executed</fullName>
+        <default>false</default>
+        <label>Meeting Executed</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Meeting Scheduled</fullName>
+        <default>false</default>
+        <label>Meeting Scheduled</label>
+    </standardValue>
+    <standardValue>
+        <fullName>New, Potential Client</fullName>
+        <default>false</default>
+        <label>New, Potential Client</label>
+    </standardValue>
+    <standardValue>
+        <fullName>New Prospect</fullName>
+        <default>false</default>
+        <label>New Prospect</label>
+    </standardValue>
+    <standardValue>
+        <fullName>No Golf, Hole Representative</fullName>
+        <default>false</default>
+        <label>No Golf, Hole Representative</label>
+    </standardValue>
+    <standardValue>
+        <fullName>No Show</fullName>
+        <default>false</default>
+        <label>No Show</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Partnered</fullName>
+        <default>false</default>
+        <label>Partnered</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Partner Inquiry, Sent to Partnerships</fullName>
+        <default>false</default>
+        <label>Partner Inquiry, Sent to Partnerships</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Passed by Quantum</fullName>
+        <default>false</default>
+        <label>Passed by Quantum</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Platinum</fullName>
+        <default>false</default>
+        <label>Platinum</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Platinum - Early Bird</fullName>
+        <default>false</default>
+        <label>Platinum - Early Bird</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Plus One</fullName>
+        <default>false</default>
+        <label>Plus One</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Post-Registration Meeting Booked</fullName>
+        <default>false</default>
+        <label>Post-Registration Meeting Booked</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Qualified</fullName>
+        <default>false</default>
+        <label>Qualified</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Qualified/Assigned</fullName>
+        <default>false</default>
+        <label>Qualified/Assigned</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Qualified by Marketing</fullName>
+        <default>false</default>
+        <label>Qualified by Marketing</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Registered</fullName>
+        <default>false</default>
+        <label>Registered</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Registered, Plus One</fullName>
+        <default>false</default>
+        <label>Registered, Plus One</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Registered for Consultation</fullName>
+        <default>false</default>
+        <label>Registered for Consultation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Registered with a Plus 1</fullName>
+        <default>false</default>
+        <label>Registered with a Plus 1</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Registered with a Plus One</fullName>
+        <default>false</default>
+        <label>Registered with a Plus One</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Responded</fullName>
+        <default>false</default>
+        <label>Responded</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Running Check-In</fullName>
+        <default>false</default>
+        <label>Running Check-In</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Running Sponsored Hole</fullName>
+        <default>false</default>
+        <label>Running Sponsored Hole</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sales Rep Working</fullName>
+        <default>false</default>
+        <label>Sales Rep Working</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Scheduled Meeting</fullName>
+        <default>false</default>
+        <label>Scheduled Meeting</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Send 2 Tickets (Has Plus One)</fullName>
+        <default>false</default>
+        <label>Send 2 Tickets (Has Plus One)</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Send Two Tickets (Plus One)</fullName>
+        <default>false</default>
+        <label>Send Two Tickets (Plus One)</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sent</fullName>
+        <default>false</default>
+        <label>Sent</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sent Calendar Invite</fullName>
+        <default>false</default>
+        <label>Sent Calendar Invite</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sent Teams Invite</fullName>
+        <default>false</default>
+        <label>Sent Teams Invite</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sent Ticket</fullName>
+        <default>false</default>
+        <label>Sent Ticket</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Silver</fullName>
+        <default>false</default>
+        <label>Silver</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Silver - Early Bird</fullName>
+        <default>false</default>
+        <label>Silver - Early Bird</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Submitted Inquiry</fullName>
+        <default>false</default>
+        <label>Submitted Inquiry</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Submitted Online Inquiry</fullName>
+        <default>false</default>
+        <label>Submitted Online Inquiry</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Subscriber, Email Open</fullName>
+        <default>false</default>
+        <label>Subscriber, Email Open</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 1</fullName>
+        <default>false</default>
+        <label>Week 1</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 2</fullName>
+        <default>false</default>
+        <label>Week 2</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 3</fullName>
+        <default>false</default>
+        <label>Week 3</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 4</fullName>
+        <default>false</default>
+        <label>Week 4</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 5</fullName>
+        <default>false</default>
+        <label>Week 5</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Week 6</fullName>
+        <default>false</default>
+        <label>Week 6</label>
+    </standardValue>
+</StandardValueSet>

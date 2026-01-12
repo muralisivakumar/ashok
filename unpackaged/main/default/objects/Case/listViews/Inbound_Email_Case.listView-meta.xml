@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Inbound_Email_Case</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Inbound Email</label>
+    <queue>Inbound_Email</queue>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

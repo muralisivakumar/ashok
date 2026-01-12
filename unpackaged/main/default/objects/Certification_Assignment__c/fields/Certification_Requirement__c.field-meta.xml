@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Certification_Requirement__c</fullName>
+    <label>Certification Requirement</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>$Source.Certification__c</field>
+            <operation>equals</operation>
+            <valueField>Certification_Requirement__c.Certification__c</valueField>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Certification_Requirement__c</referenceTo>
+    <relationshipLabel>Certification Assignments</relationshipLabel>
+    <relationshipName>Certification_Assignments</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>true</writeRequiresMasterRead>
+</CustomField>

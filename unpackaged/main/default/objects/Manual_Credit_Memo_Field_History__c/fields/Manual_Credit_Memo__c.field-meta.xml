@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Manual_Credit_Memo__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Reference to Manual Credit Memo record</description>
+    <label>Manual Credit Memo</label>
+    <referenceTo>Manual_Credit_Memo__c</referenceTo>
+    <relationshipLabel>Manual Credit Memo Field Histories</relationshipLabel>
+    <relationshipName>Manual_Credit_Memo_Field_Histories</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

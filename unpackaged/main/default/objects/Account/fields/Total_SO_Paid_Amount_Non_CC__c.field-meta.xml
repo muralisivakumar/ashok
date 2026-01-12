@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_SO_Paid_Amount_Non_CC__c</fullName>
+    <label>Total SO Paid Amount (Non CC)</label>
+    <summarizedField>varcpq__Sales_Order__c.Total_Customer_Invoice_Payments__c</summarizedField>
+    <summaryFilterItems>
+        <field>varcpq__Sales_Order__c.Order_Type__c</field>
+        <operation>notEqual</operation>
+        <value>Credit Card Order</value>
+    </summaryFilterItems>
+    <summaryForeignKey>varcpq__Sales_Order__c.varcpq__Client__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

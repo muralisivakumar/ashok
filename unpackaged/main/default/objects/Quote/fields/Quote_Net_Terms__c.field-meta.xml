@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quote_Net_Terms__c</fullName>
+    <label>Quote Net Terms</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No Terms</fullName>
+                <default>true</default>
+                <label>No Terms</label>
+            </value>
+            <value>
+                <fullName>Pay on Pay</fullName>
+                <default>false</default>
+                <label>Pay on Pay</label>
+            </value>
+            <value>
+                <fullName>NET10</fullName>
+                <default>false</default>
+                <label>NET10</label>
+            </value>
+            <value>
+                <fullName>NET15</fullName>
+                <default>false</default>
+                <label>NET15</label>
+            </value>
+            <value>
+                <fullName>NET20</fullName>
+                <default>false</default>
+                <label>NET20</label>
+            </value>
+            <value>
+                <fullName>NET30</fullName>
+                <default>false</default>
+                <label>NET30</label>
+            </value>
+            <value>
+                <fullName>NET40</fullName>
+                <default>false</default>
+                <label>NET40</label>
+            </value>
+            <value>
+                <fullName>NET45</fullName>
+                <default>false</default>
+                <label>NET45</label>
+            </value>
+            <value>
+                <fullName>NET50</fullName>
+                <default>false</default>
+                <label>NET50</label>
+            </value>
+            <value>
+                <fullName>NET60</fullName>
+                <default>false</default>
+                <label>NET60</label>
+            </value>
+            <value>
+                <fullName>NET75</fullName>
+                <default>false</default>
+                <label>NET75</label>
+            </value>
+            <value>
+                <fullName>NET90</fullName>
+                <default>false</default>
+                <label>NET90</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

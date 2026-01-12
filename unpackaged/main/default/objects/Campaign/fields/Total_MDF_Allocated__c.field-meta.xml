@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_MDF_Allocated__c</fullName>
+    <label>Total MDF Allocated</label>
+    <summarizedField>MDF_Allocation__c.Amount__c</summarizedField>
+    <summaryForeignKey>MDF_Allocation__c.Campaign__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

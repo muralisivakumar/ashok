@@ -1,0 +1,1437 @@
+<apex:page controller="QuotePDFController" applyBodyTag="false" showHeader="false" sidebar="false" renderAs="PDF">
+    <head>
+        <style>
+            /* Basic page setup */
+            @page {
+                size: {!pageOrientation};
+                margin: 0.5in 0.5in 1.7in 0.5in;
+                counter-increment: page;
+                @bottom-center {
+                    content: element(footer);
+                    width: 100%;
+                }
+            }
+            
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+            }
+
+            p {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            /* Table-based layout for PDF compatibility */
+            table {
+                border-collapse: collapse;
+            }
+            
+            /* Header table layout */
+            .header-table {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .header-table td {
+                vertical-align: top;
+                padding: 0;
+            }
+            
+            /* Company info styling */
+            .company-info {
+                font-size: 11px;
+            }
+            
+            .company-info p {
+                margin: 0;
+                line-height: 1.4;
+            }
+            
+            /* Quote title */
+            .quote-title {
+                font-size: 20pt;
+                font-weight: bold;
+                text-align: right;
+            }
+            
+            /* Quote info table */
+            .quote-info {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+            }
+            
+            .quote-info td {
+                padding: 4px 8px;
+                border: 1px solid #ccc;
+                font-size: 11px;
+            }
+            
+            .quote-info td.label {
+                font-weight: bold;
+                background-color: #f5f5f5;
+                width: 40%;
+            }
+            
+            /* Sales rep info */
+            .sales-rep-info {
+                text-align: right;
+                font-size: 11px;
+                margin-top: 10px;
+            }
+            
+            /* Address boxes */
+            .address-table {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .address-table td {
+                width: 32%;
+                vertical-align: top;
+                padding: 0 5px;
+            }
+            
+            .address-table td:first-child {
+                padding-left: 0;
+            }
+            
+            .address-table td:last-child {
+                padding-right: 0;
+            }
+            
+            /* Info box styling */
+            .info-box {
+                border: 1px solid #ccc;
+                background-color: #f5f5f5;
+                padding: 5px 6px 6px;
+                font-size: 11px;
+            }
+
+            .info-box h3 {
+                margin: 0 0 2px 0;
+                padding: 0 0 2px 0;
+                border-bottom: 1px solid #ddd;
+                font-size: 14px;
+            }
+            
+            /* Order info table */
+            .order-info-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 15px;
+                font-size: 11px;
+            }
+            
+            .order-info-table th {
+                background-color: #8DAEC1;
+                color: white;
+                text-align: left;
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            .order-info-table td {
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            /* Line items table styling */
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+                margin-bottom: 20px;
+                table-layout: fixed; /* Essential for column width control */
+            }
+            
+            .table th {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                padding: 6px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            
+             .table td {
+                padding: 6px;
+                border: 1px solid #ccc;
+                vertical-align: top;
+                /* Add word wrapping for most columns */
+                word-wrap: break-word;
+                word-break: break-word;
+               
+            }
+
+            .table td.col-part-num {
+                line-height: 0.8; /* Tight line spacing */
+            }
+                        
+            /* Column width classes */
+            .col-line-num {
+                width: 35px !important;
+                text-align: center;
+            }
+            
+            .col-mfg {
+                width: 80px !important;
+            }
+            
+            .col-part-num {
+                width: 170px !important;
+            }
+            
+            .col-qty {
+                width: 40px !important;
+                text-align: center;
+            }
+            
+            .col-desc {
+                width: auto !important; /* Takes remaining space */
+            }
+            
+            .col-price {
+                width: 110px !important;
+                text-align: right;
+                white-space: nowrap;
+            }
+            
+            .col-ext-price {
+                width: 110px !important;
+                text-align: right;
+                white-space: nowrap;
+            }
+            
+            /* Ensure text wrapping for part number and description */
+            .table td.col-part-num,
+            .table td.col-desc,
+            .table td.col-mfg {
+                word-wrap: break-word;
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
+            
+            /* Prevent wrapping for price columns */
+            .table td.col-price,
+            .table td.col-ext-price {
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            
+            .table tr.even {
+                background-color: #f9f9f9;
+            }
+            
+            /* Group header and subtotal */
+            .group-header {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                font-size: 12px;
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-bottom: none;
+            }
+            
+            .group-subtotal {
+                background-color: #f3f3f3;
+                font-weight: bold;
+            }
+            
+            /* Totals section */
+            .totals-wrapper {
+                width: 100%;
+                clear: both;
+            }
+            
+            .totals-table {
+                width: 350px;
+                float: right;
+                border-collapse: collapse;
+                margin-top: 7px;
+            }
+            
+            .totals-table tr {
+                height: 18px;
+            }
+            
+            .totals-table td {
+                font-size: 11px;
+                padding: 1px 5px;
+            }
+            
+            .total-label {
+                text-align: right;
+                padding-right: 10px;
+            }
+            
+            .total-value {
+                text-align: right;
+                width: 120px;
+            }
+            
+            td.grand-total {
+                font-weight: bold;
+                border-top: 2px solid #000;
+                padding-top: 1px;
+                font-size: 12px;
+            }
+            
+            /* Footer styling */
+            .footer {
+                position: running(footer);
+                width: 100%;
+                font-size: 8px;
+                color: #666;
+                padding-top: 5px;
+                margin: 0;
+            }
+
+            .footer-content {
+                width: 100%;
+                border-top: 1px solid #ddd;
+                padding-top: 5px;
+            }
+
+            .footer-disclaimer {
+                width: 100%;
+                margin-bottom: 2px;
+            }
+            
+            .footer-disclaimer p {
+                margin: 0;
+                line-height: 1.3;
+            }
+
+            .footer-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .footer-table td {
+                padding: 0;
+                vertical-align: top;
+            }
+
+            .footer-left {
+                text-align: left;
+                width: 70%;
+            }
+
+            .footer-right {
+                text-align: right;
+                width: 30%;
+            }
+            
+            /* Fixed page number display */
+            #pageNum:after {
+                content: counter(page);
+            }
+            
+            /* Section spacing */
+            .section {
+                margin-bottom: 20px;
+            }
+            
+            /* Clear floats */
+            .clear {
+                clear: both;
+            }
+            
+            .hide-column {
+                display: none;
+            }
+            .show-column{
+                width:50px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header Section -->
+        <div id="header" class="section">
+            <!-- Top Row: Logo and Quote Title -->
+            <table class="header-table">
+                <tr>
+                    <td width="50%">
+                        <apex:outputPanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                            <apex:image id="logoCA" value="{!$Resource.LogoCA}" width="200"/>   
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!account.RecordType.Name == 'US Account'}">
+                            <apex:image id="logoUS" value="{!$Resource.LogoUS}" width="225"/>   
+                        </apex:outputPanel>
+                    </td>
+                    <td width="50%">
+                        <div class="quote-title">Quotation</div>
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- Bottom Row: Company Info and Quote Details -->
+            <table class="header-table">
+                <tr>
+                    <!-- Company Info -->
+                    <td width="50%" style="padding-right: 20px;">
+                        <div class="company-info">
+                            <p>
+                                <strong>{!companyInfo.name}</strong><br/>
+                                {!companyInfo.street}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(companyInfo.suite))}">
+                                    {!companyInfo.suite}<br/>
+                                </apex:outputPanel>
+                                {!companyInfo.cityStateZip}<br/>
+                                Phone: {!companyInfo.phone}<br/>
+                                <apex:outputText value="{!companyInfo.website}" />
+                            </p>
+                        </div>
+                    </td>
+                    
+                    <!-- Quote Details Table -->
+                    <td width="50%">
+                        <table class="quote-info">
+                            <tr>
+                                <td class="label">Quote #</td>
+                                <td>{!quote.QuoteNumber}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Terms</td>
+                                <td>{!quote.Quote_Net_Terms__c}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Contact</td>
+                                <td>{!quote.BillingName}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Quote Date</td>
+                                <td>
+                                    <apex:outputText value="{0, date, M/d/yyyy}">
+                                        <apex:param value="{!NOW()}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">Expires</td>
+                                <td>
+                                    <apex:outputText value="{0, date, M/d/yyyy}">
+                                        <apex:param value="{!quote.ExpirationDate}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <div class="sales-rep-info">
+                            <strong>Sales Rep:</strong> {!account.Owner.Name}<br/>
+                            <apex:outputText value="{!account.Owner.Email}" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Address Section -->
+        <div class="section">
+            <table class="address-table">
+                <tr>
+                    <td>
+                        <div class="info-box">
+                            <h3>Customer</h3>
+                            <p>
+                                {!quote.Bill_To_Company__c}<br/>
+                                {!quote.BillingName}<br/>
+                                {!quote.BillingStreet}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(quote.BillingAdditionalStreet__c))}">
+                                    {!quote.BillingAdditionalStreet__c}<br/>
+                                </apex:outputPanel>
+                                {!quote.BillingCity}, {!quote.BillingState} {!quote.BillingPostalCode}<br/>
+                                {!quote.Bill_to_phone__c}<br/>
+                                <apex:outputText value="{!quote.Bill_to_email__c}" rendered="{!NOT(ISBLANK(quote.Bill_to_email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="info-box">
+                            <h3>Bill To</h3>
+                            <p>
+                                {!quote.Bill_To_Company__c}<br/>
+                                {!quote.BillingName}<br/> 
+                                {!quote.BillingStreet}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(quote.BillingAdditionalStreet__c))}">
+                                    {!quote.BillingAdditionalStreet__c}<br/>
+                                </apex:outputPanel>
+                                {!quote.BillingCity}, {!quote.BillingState} {!quote.BillingPostalCode}<br/>
+                                {!quote.Bill_to_phone__c}<br/>
+                                <apex:outputText value="{!quote.Bill_to_email__c}" rendered="{!NOT(ISBLANK(quote.Bill_to_email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="info-box">
+                            <h3>Ship To</h3>
+                            <p>
+                                {!quote.Ship_To_Company__c}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(quote.Additional_Ship_To_Header__c))}">
+                                    {!quote.Additional_Ship_To_Header__c}<br/>
+                                </apex:outputPanel>
+                                Attn: {!quote.ShippingName}<br/>
+                                {!quote.ShippingStreet}<br/>
+                                <apex:outputPanel rendered="{!NOT(ISBLANK(quote.ShippingAdditionalStreet__c))}">
+                                    {!quote.ShippingAdditionalStreet__c}<br/>
+                                </apex:outputPanel>
+                                {!quote.ShippingCity}, {!quote.ShippingState} {!quote.ShippingPostalCode}<br/>
+                                {!quote.Ship_to_phone__c}<br/>
+                                <apex:outputText value="{!quote.Ship_to_email__c}" rendered="{!NOT(ISBLANK(quote.Ship_to_email__c))}" />
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- Order Info Row -->
+            <table class="order-info-table">
+                <tr>
+                    <th>Description</th>
+                    <th>Customer PO</th>
+                    <th>Contract</th>
+                    <th>Ship Via</th>
+                    <th>Cost Centre Reference</th>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!quote.Name}" rendered="{!NOT(ISBLANK(quote.Name))}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!quote.Customer_PO__c}" rendered="{!NOT(ISBLANK(quote.Customer_PO__c))}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!quote.Contract.Name}" rendered="{!NOT(ISBLANK(quote.Contract.Name))}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!quote.Shipping_Method__c}" rendered="{!NOT(ISBLANK(quote.Shipping_Method__c))}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!quote.Cost_Centre_Reference__c}" rendered="{!NOT(ISBLANK(quote.Cost_Centre_Reference__c))}" />
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- Line Items Table -->
+            <!-- Groups Display -->
+            <apex:outputPanel rendered="{!hasMultipleGroups}">
+                <apex:outputPanel rendered="{!hasRenewalDates}">
+                    <apex:repeat value="{!quoteGroups}" var="quoteGroup">
+                        <div class="group-header">{!quoteGroup.groupRecord.Name}</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="col-line-num">#</th>
+                                    <th style="width:70px;">Mfg</th>
+                                    <th style="width:130px;">Mfg Part #</th>
+                                    <th class="col-qty">Qty</th>
+                                    <th style="width:auto;">Description</th>
+                                    <th style="width:75px;">Start Date</th>
+                                    <th style="width:75px;">End Date</th>
+                                    <th style="width:90px;text-align:right;">Price</th>
+                                    <th style="width:90px;text-align:right;">Extended Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:variable var="rowCount" value="{!0}"/>
+                                <apex:repeat value="{!quoteGroup.lineItems}" var="line">
+                                    <apex:variable var="rowCount" value="{!rowCount + 1}"/>
+                                    <tr class="{!IF(MOD(rowCount, 2) = 0, 'even', 'odd')}">
+                                        <td class="col-line-num">
+                                            <apex:outputText value="{0, number, 0}">
+                                                <apex:param value="{!line.varcpq__DH_Line__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:70px;word-wrap:break-word;">{!line.varcpq__Manufacturer__c}</td>
+                                        <td class="col-part-num" style="width:130px;word-wrap:break-word;word-break:break-word;">
+                                            <apex:outputText value="{!IF(LEN(line.varcpq__PartNumber__c) > 10,
+                                                LEFT(line.varcpq__PartNumber__c, 10) + '<br/>' + 
+                                                IF(LEN(line.varcpq__PartNumber__c) > 20,
+                                                    MID(line.varcpq__PartNumber__c, 11, 10) + '<br/>' + 
+                                                    MID(line.varcpq__PartNumber__c, 21, 100),
+                                                    MID(line.varcpq__PartNumber__c, 11, 100)
+                                                ),
+                                                line.varcpq__PartNumber__c
+                                            )}" escape="false" />
+                                        </td>
+                                        <td class="col-qty">
+                                            <apex:outputText value="{0, number, 0}">
+                                                <apex:param value="{!line.Quantity}" />
+                                            </apex:outputText>
+                                        </td>
+                                    <!--    <td style="white-space: normal !important; 
+    word-break: break-all !important; 
+    overflow-wrap: anywhere !important; 
+    max-width: 300px; 
+    word-wrap: break-word !important;" >  {!IF(
+    LEN(line.Description__c) > LEN(line.Description),
+    line.Description__c,
+    line.Description
+)}</td>  -->
+                                        
+                                 <!--  <td style="width:130px; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description) > 30,
+            '<div>' + LEFT(line.Description, 30) + '</div>' +
+            IF(LEN(line.Description) > 60,
+                '<div>' + MID(line.Description, 31, 30) + '</div>' +
+                IF(LEN(line.Description) > 90,
+                    '<div>' + MID(line.Description, 61, 30) + '</div>' +
+                    IF(LEN(line.Description) > 120,
+                        '<div>' + MID(line.Description, 91, 30) + '</div>' +
+                        IF(LEN(line.Description) > 150,
+                            '<div>' + MID(line.Description, 121, 30) + '</div>' +
+                            IF(LEN(line.Description) > 180,
+                                '<div>' + MID(line.Description, 151, 30) + '</div>' +
+                                IF(LEN(line.Description) > 210,
+                                    '<div>' + MID(line.Description, 181, 30) + '</div>' +
+                                    IF(LEN(line.Description) > 240,
+                                        '<div>' + MID(line.Description, 211, 30) + '</div>' +
+                                        '<div>' + MID(line.Description, 241, 30) + '</div>',
+                                        '<div>' + MID(line.Description, 211, 60) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description, 181, 90) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description, 151, 120) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description, 121, 150) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description, 91, 180) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description, 61, 210) + '</div>'
+                ),
+                '<div>' + MID(line.Description, 31, 240) + '</div>'
+            ),
+            line.Description
+        )
+    }"/>
+</td>-->
+
+
+
+  <!--<td style="max-width: 300px; width: 300px;">
+  <div style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
+    <apex:outputText value="{!wrappedLineItems[rowCount - 1].processedDescription}" escape="false" />
+  </div>
+</td> -->
+  <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+  <!--<td style="width:130px; word-wrap: break-word; word-break: break-word;">
+    <apex:repeat value="{!lineItemDescriptionChunks[line.Id]}" var="lineChunk">
+      <div>{!lineChunk}</div>
+    </apex:repeat>
+  </td>-->
+  <td><apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" /></td>
+
+<!--<td style="width:auto; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description__c) > LEN(line.Description),
+            /* Use Description__c with multi-line slicing */
+            IF(LEN(line.Description__c) > 30,
+                '<div>' + LEFT(line.Description__c, 30) + '</div>' +
+                IF(LEN(line.Description__c) > 60,
+                    '<div>' + MID(line.Description__c, 31, 30) + '</div>' +
+                    IF(LEN(line.Description__c) > 90,
+                        '<div>' + MID(line.Description__c, 61, 30) + '</div>' +
+                        IF(LEN(line.Description__c) > 120,
+                            '<div>' + MID(line.Description__c, 91, 30) + '</div>' +
+                            IF(LEN(line.Description__c) > 150,
+                                '<div>' + MID(line.Description__c, 121, 30) + '</div>' +
+                                IF(LEN(line.Description__c) > 180,
+                                    '<div>' + MID(line.Description__c, 151, 30) + '</div>' +
+                                    IF(LEN(line.Description__c) > 210,
+                                        '<div>' + MID(line.Description__c, 181, 30) + '</div>' +
+                                        IF(LEN(line.Description__c) > 240,
+                                            '<div>' + MID(line.Description__c, 211, 30) + '</div>' +
+                                            '<div>' + MID(line.Description__c, 241, 30) + '</div>',
+                                            '<div>' + MID(line.Description__c, 211, 60) + '</div>'
+                                        ),
+                                        '<div>' + MID(line.Description__c, 181, 90) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description__c, 151, 120) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description__c, 121, 150) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description__c, 91, 180) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description__c, 61, 210) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description__c, 31, 240) + '</div>'
+                ),
+                line.Description__c
+            ),
+            /* else show original Description as is */
+            line.Description
+        )
+    }"/>
+</td>-->
+
+
+
+                                        
+                                        <td style="width:75px;">
+                                            <apex:outputText value="{0,date,MM-dd-yyyy}">
+                                                <apex:param value="{!line.Term_Start_Date__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:75px;">
+                                            <apex:outputText value="{0,date,MM-dd-yyyy}">
+                                                <apex:param value="{!line.Term_End_Date__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:90px;text-align:right;white-space:nowrap;">
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.UnitPrice}" />
+                                            </apex:outputText>
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.UnitPrice}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:90px;text-align:right;white-space:nowrap;">
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                            </apex:outputText>
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                                <tr class="group-subtotal">
+                                    <td colspan="8" style="text-align:right;">{!quoteGroup.groupRecord.Name} Subtotal:</td>
+                                    <td class="no-wrap" style="text-align:right;">
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!IF(quoteGroup.groupRecord.varcpq__DH_Sub_Total__c != null, quoteGroup.groupRecord.varcpq__DH_Sub_Total__c, quoteGroup.subtotal)}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!IF(quoteGroup.groupRecord.varcpq__DH_Sub_Total__c != null, quoteGroup.groupRecord.varcpq__DH_Sub_Total__c, quoteGroup.subtotal)}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="height:15px;"></div>
+                    </apex:repeat>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(hasRenewalDates)}">
+                    <apex:repeat value="{!quoteGroups}" var="quoteGroup">
+                        <div class="group-header">{!quoteGroup.groupRecord.Name}</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <!--<th class="col-line-num">#</th>
+                                    <th class="col-mfg">Mfg</th>
+                                    <th class="col-part-num">Mfg Part #</th>
+                                    <th class="col-qty">Qty</th>
+                                    <th class="col-desc">Description</th>
+                                    <th class="col-price">Price</th>
+                                    <th class="col-ext-price">Extended Price</th>-->
+                                    
+                                    <th style="width:4%;text-align:center;">#</th>
+                                    <th style="width:15%;">Mfg</th>
+                                    <th style="width:10%;">Mfg Part #</th>
+                                    <th style="width:5%;text-align:center;">Qty</th>
+                                    <th style="width:30%;">Description</th>
+                                    <th style="width:13%;text-align:right;">Price</th>
+                                    <th style="width:13%;text-align:right;">Extended Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:variable var="rowCount" value="{!0}"/>
+                                <apex:repeat value="{!quoteGroup.lineItems}" var="line">
+                                    <apex:variable var="rowCount" value="{!rowCount + 1}"/>
+                                    <tr class="{!IF(MOD(rowCount, 2) = 0, 'even', 'odd')}">
+                                        <td style="text-align:center;">
+                                            <apex:outputText value="{0, number, 0}">
+                                                <apex:param value="{!line.varcpq__DH_Line__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td>{!line.varcpq__Manufacturer__c}</td>
+                                        <td class="col-part-num" style="width:130px;word-wrap:break-word;word-break:break-word;">
+                                            <apex:outputText value="{!IF(LEN(line.varcpq__PartNumber__c) > 10,
+                                                LEFT(line.varcpq__PartNumber__c, 10) + '<br/>' + 
+                                                IF(LEN(line.varcpq__PartNumber__c) > 20,
+                                                    MID(line.varcpq__PartNumber__c, 11, 10) + '<br/>' + 
+                                                    MID(line.varcpq__PartNumber__c, 21, 100),
+                                                    MID(line.varcpq__PartNumber__c, 11, 100)
+                                                ),
+                                                line.varcpq__PartNumber__c
+                                            )}" escape="false" />
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <apex:outputText value="{0, number, 0}">
+                                                <apex:param value="{!line.Quantity}" />
+                                            </apex:outputText>
+                                        </td>
+                                       <!--   <td style="white-space: normal !important; 
+    word-break: break-all !important; 
+    overflow-wrap: anywhere !important; 
+    max-width: 300px; 
+    word-wrap: break-word !important;">  {!IF(
+    LEN(line.Description__c) > LEN(line.Description),
+    line.Description__c,
+    line.Description
+                                        )}</td> -->
+                                        
+                              <!--   <td style="width:130px; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description) > 30,
+            '<div>' + LEFT(line.Description, 30) + '</div>' +
+            IF(LEN(line.Description) > 60,
+                '<div>' + MID(line.Description, 31, 30) + '</div>' +
+                IF(LEN(line.Description) > 90,
+                    '<div>' + MID(line.Description, 61, 30) + '</div>' +
+                    IF(LEN(line.Description) > 120,
+                        '<div>' + MID(line.Description, 91, 30) + '</div>' +
+                        IF(LEN(line.Description) > 150,
+                            '<div>' + MID(line.Description, 121, 30) + '</div>' +
+                            IF(LEN(line.Description) > 180,
+                                '<div>' + MID(line.Description, 151, 30) + '</div>' +
+                                IF(LEN(line.Description) > 210,
+                                    '<div>' + MID(line.Description, 181, 30) + '</div>' +
+                                    IF(LEN(line.Description) > 240,
+                                        '<div>' + MID(line.Description, 211, 30) + '</div>' +
+                                        '<div>' + MID(line.Description, 241, 30) + '</div>',
+                                        '<div>' + MID(line.Description, 211, 60) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description, 181, 90) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description, 151, 120) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description, 121, 150) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description, 91, 180) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description, 61, 210) + '</div>'
+                ),
+                '<div>' + MID(line.Description, 31, 240) + '</div>'
+            ),
+            line.Description
+        )
+    }"/>
+</td>-->
+
+ <!--<td style="max-width: 300px; width: 300px;">
+  <div style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
+    <apex:outputText value="{!wrappedLineItems[rowCount - 1].processedDescription}" escape="false" />
+  </div>
+</td> -->
+  <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+  <!--<td style="width:130px; word-wrap: break-word; word-break: break-word;">
+    <apex:repeat value="{!lineItemDescriptionChunks[line.Id]}" var="lineChunk">
+      <div>{!lineChunk}</div>
+    </apex:repeat>
+  </td>-->
+  <td style="width:130px;">
+   <apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" />
+  </td>
+<!--<td style="width:auto; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description__c) > LEN(line.Description),
+            /* Use Description__c with multi-line slicing */
+            IF(LEN(line.Description__c) > 30,
+                '<div>' + LEFT(line.Description__c, 30) + '</div>' +
+                IF(LEN(line.Description__c) > 60,
+                    '<div>' + MID(line.Description__c, 31, 30) + '</div>' +
+                    IF(LEN(line.Description__c) > 90,
+                        '<div>' + MID(line.Description__c, 61, 30) + '</div>' +
+                        IF(LEN(line.Description__c) > 120,
+                            '<div>' + MID(line.Description__c, 91, 30) + '</div>' +
+                            IF(LEN(line.Description__c) > 150,
+                                '<div>' + MID(line.Description__c, 121, 30) + '</div>' +
+                                IF(LEN(line.Description__c) > 180,
+                                    '<div>' + MID(line.Description__c, 151, 30) + '</div>' +
+                                    IF(LEN(line.Description__c) > 210,
+                                        '<div>' + MID(line.Description__c, 181, 30) + '</div>' +
+                                        IF(LEN(line.Description__c) > 240,
+                                            '<div>' + MID(line.Description__c, 211, 30) + '</div>' +
+                                            '<div>' + MID(line.Description__c, 241, 30) + '</div>',
+                                            '<div>' + MID(line.Description__c, 211, 60) + '</div>'
+                                        ),
+                                        '<div>' + MID(line.Description__c, 181, 90) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description__c, 151, 120) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description__c, 121, 150) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description__c, 91, 180) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description__c, 61, 210) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description__c, 31, 240) + '</div>'
+                ),
+                line.Description__c
+            ),
+            /* else show original Description as is */
+            line.Description
+        )
+    }"/>
+</td>-->
+
+
+
+                                      
+                                        <td class="no-wrap" style="text-align:right;">
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number,###,###,##0.00}">
+                                                <apex:param value="{!line.UnitPrice}" />
+                                            </apex:outputText>
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.UnitPrice}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td class="no-wrap" style="text-align:right;">
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                            </apex:outputText>
+                                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                            </apex:outputText>
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                                <tr class="group-subtotal">
+                                    <td colspan="6" style="text-align:right;">{!quoteGroup.groupRecord.Name} Subtotal:</td>
+                                    <td class="no-wrap" style="text-align:right;">
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!IF(quoteGroup.groupRecord.varcpq__DH_Sub_Total__c != null, quoteGroup.groupRecord.varcpq__DH_Sub_Total__c, quoteGroup.subtotal)}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!IF(quoteGroup.groupRecord.varcpq__DH_Sub_Total__c != null, quoteGroup.groupRecord.varcpq__DH_Sub_Total__c, quoteGroup.subtotal)}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="height:15px;"></div>
+                    </apex:repeat>
+                </apex:outputPanel>
+                <!-- Ungrouped Items -->
+                <apex:outputPanel rendered="{!ungroupedItems.size > 0}">
+                    <div class="group-header">Other Items</div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:4%;text-align:center;">#</th>
+                                <th style="width:15%;">Mfg</th>
+                                <th style="width:10%;">Mfg Part #</th>
+                                <th style="width:5%;text-align:center;">Qty</th>
+                                <th style="width:30%;">Description</th>
+                                <th style="width:13%;text-align:right;">Price</th>
+                                <th style="width:13%;text-align:right;">Extended Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:variable var="rowCount" value="{!0}"/>
+                            <apex:repeat value="{!ungroupedItems}" var="line">
+                                <apex:variable var="rowCount" value="{!rowCount + 1}"/>
+                                <tr class="{!IF(MOD(rowCount, 2) = 0, 'even', 'odd')}">
+                                    <td style="text-align:center;">
+                                        <apex:outputText value="{0, number, 0}">
+                                            <apex:param value="{!line.varcpq__DH_Line__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                    <td>{!line.varcpq__Manufacturer__c}</td>
+                                    <td class="col-part-num" style="width:130px;word-wrap:break-word;word-break:break-word;">
+                                        <apex:outputText value="{!IF(LEN(line.varcpq__PartNumber__c) > 10,
+                                                LEFT(line.varcpq__PartNumber__c, 10) + '<br/>' + 
+                                                IF(LEN(line.varcpq__PartNumber__c) > 20,
+                                                    MID(line.varcpq__PartNumber__c, 11, 10) + '<br/>' + 
+                                                    MID(line.varcpq__PartNumber__c, 21, 100),
+                                                    MID(line.varcpq__PartNumber__c, 11, 100)
+                                                ),
+                                                line.varcpq__PartNumber__c
+                                            )}" escape="false" />
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <apex:outputText value="{0, number, 0}">
+                                            <apex:param value="{!line.Quantity}" />
+                                        </apex:outputText>
+                                    </td>
+                                  <!--     <td style="white-space: normal !important; 
+    word-break: break-all !important; 
+    overflow-wrap: anywhere !important; 
+    max-width: 300px; 
+    word-wrap: break-word !important;">  {!IF(
+    LEN(line.Description__c) > LEN(line.Description),
+    line.Description__c,
+    line.Description
+)}</td>   -->
+                                    
+                          <!--  <td style="width:130px; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description) > 30,
+            '<div>' + LEFT(line.Description, 30) + '</div>' +
+            IF(LEN(line.Description) > 60,
+                '<div>' + MID(line.Description, 31, 30) + '</div>' +
+                IF(LEN(line.Description) > 90,
+                    '<div>' + MID(line.Description, 61, 30) + '</div>' +
+                    IF(LEN(line.Description) > 120,
+                        '<div>' + MID(line.Description, 91, 30) + '</div>' +
+                        IF(LEN(line.Description) > 150,
+                            '<div>' + MID(line.Description, 121, 30) + '</div>' +
+                            IF(LEN(line.Description) > 180,
+                                '<div>' + MID(line.Description, 151, 30) + '</div>' +
+                                IF(LEN(line.Description) > 210,
+                                    '<div>' + MID(line.Description, 181, 30) + '</div>' +
+                                    IF(LEN(line.Description) > 240,
+                                        '<div>' + MID(line.Description, 211, 30) + '</div>' +
+                                        '<div>' + MID(line.Description, 241, 30) + '</div>',
+                                        '<div>' + MID(line.Description, 211, 60) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description, 181, 90) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description, 151, 120) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description, 121, 150) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description, 91, 180) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description, 61, 210) + '</div>'
+                ),
+                '<div>' + MID(line.Description, 31, 240) + '</div>'
+            ),
+            line.Description
+        )
+    }"/>
+</td>-->
+
+ <!--<td style="max-width: 300px; width: 300px;">
+  <div style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
+    <apex:outputText value="{!wrappedLineItems[rowCount - 1].processedDescription}" escape="false" />
+  </div>
+</td> -->
+  <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+  <!--<td style="width:130px; word-wrap: break-word; word-break: break-word;">
+    <apex:repeat value="{!lineItemDescriptionChunks[line.Id]}" var="lineChunk">
+      <div>{!lineChunk}</div>
+    </apex:repeat>
+  </td>-->
+  <td style="width:130px;">
+    <apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" />
+  </td>
+<!--<td style="width:auto; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description__c) > LEN(line.Description),
+            /* Use Description__c with multi-line slicing */
+            IF(LEN(line.Description__c) > 30,
+                '<div>' + LEFT(line.Description__c, 30) + '</div>' +
+                IF(LEN(line.Description__c) > 60,
+                    '<div>' + MID(line.Description__c, 31, 30) + '</div>' +
+                    IF(LEN(line.Description__c) > 90,
+                        '<div>' + MID(line.Description__c, 61, 30) + '</div>' +
+                        IF(LEN(line.Description__c) > 120,
+                            '<div>' + MID(line.Description__c, 91, 30) + '</div>' +
+                            IF(LEN(line.Description__c) > 150,
+                                '<div>' + MID(line.Description__c, 121, 30) + '</div>' +
+                                IF(LEN(line.Description__c) > 180,
+                                    '<div>' + MID(line.Description__c, 151, 30) + '</div>' +
+                                    IF(LEN(line.Description__c) > 210,
+                                        '<div>' + MID(line.Description__c, 181, 30) + '</div>' +
+                                        IF(LEN(line.Description__c) > 240,
+                                            '<div>' + MID(line.Description__c, 211, 30) + '</div>' +
+                                            '<div>' + MID(line.Description__c, 241, 30) + '</div>',
+                                            '<div>' + MID(line.Description__c, 211, 60) + '</div>'
+                                        ),
+                                        '<div>' + MID(line.Description__c, 181, 90) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description__c, 151, 120) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description__c, 121, 150) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description__c, 91, 180) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description__c, 61, 210) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description__c, 31, 240) + '</div>'
+                ),
+                line.Description__c
+            ),
+            /* else show original Description as is */
+            line.Description
+        )
+    }"/>
+</td>-->
+
+                          
+                                    <td class="no-wrap" style="text-align:right;">
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!line.UnitPrice}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!line.UnitPrice}" />
+                                        </apex:outputText>
+                                    </td>
+                                    <td class="no-wrap" style="text-align:right;">
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            
+            <!-- Default table (no groups) -->
+            <apex:outputPanel rendered="{!NOT(hasMultipleGroups)}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:4%;text-align:center;">#</th>
+                            <th style="width:15%;">Mfg</th>
+                            <th style="width:10%;">Mfg Part #</th>
+                            <th style="width:5%;text-align:center;">Qty</th>
+                            <th style="width:30%;">Description</th>
+                            <th style="width:13%;text-align:right;">Price</th>
+                            <th style="width:13%;text-align:right;">Extended Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:variable var="rowCount" value="{!0}"/>
+                        <apex:repeat value="{!ungroupedItems}" var="line">
+                            <apex:variable var="rowCount" value="{!rowCount + 1}"/>
+                            <tr class="{!IF(MOD(rowCount, 2) = 0, 'even', 'odd')}">
+                                <td style="text-align:center;">
+                                    <apex:outputText value="{0, number, 0}">
+                                        <apex:param value="{!line.varcpq__DH_Line__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td>{!line.varcpq__Manufacturer__c}</td>
+                                <td class="col-part-num" style="width:130px;word-wrap:break-word;word-break:break-word;">
+                                    <apex:outputText value="{!IF(LEN(line.varcpq__PartNumber__c) > 10,
+                                                LEFT(line.varcpq__PartNumber__c, 10) + '<br/>' + 
+                                                IF(LEN(line.varcpq__PartNumber__c) > 20,
+                                                    MID(line.varcpq__PartNumber__c, 11, 10) + '<br/>' + 
+                                                    MID(line.varcpq__PartNumber__c, 21, 100),
+                                                    MID(line.varcpq__PartNumber__c, 11, 100)
+                                                ),
+                                                line.varcpq__PartNumber__c
+                                            )}" escape="false" />
+                                </td>
+                                <td style="text-align:center;">
+                                    <apex:outputText value="{0, number, 0}">
+                                        <apex:param value="{!line.Quantity}" />
+                                    </apex:outputText>
+                                </td>
+                                  <!--     <td style="white-space: normal !important; 
+    word-break: break-all !important; 
+    overflow-wrap: anywhere !important; 
+    max-width: 300px; 
+    word-wrap: break-word !important;">  {!IF(
+    LEN(line.Description__c) > LEN(line.Description),
+    line.Description__c,
+    line.Description
+)}</td>   -->
+                              <!-- <td style="width:130px; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description) > 30,
+            '<div>' + LEFT(line.Description, 30) + '</div>' +
+            IF(LEN(line.Description) > 60,
+                '<div>' + MID(line.Description, 31, 30) + '</div>' +
+                IF(LEN(line.Description) > 90,
+                    '<div>' + MID(line.Description, 61, 30) + '</div>' +
+                    IF(LEN(line.Description) > 120,
+                        '<div>' + MID(line.Description, 91, 30) + '</div>' +
+                        IF(LEN(line.Description) > 150,
+                            '<div>' + MID(line.Description, 121, 30) + '</div>' +
+                            IF(LEN(line.Description) > 180,
+                                '<div>' + MID(line.Description, 151, 30) + '</div>' +
+                                IF(LEN(line.Description) > 210,
+                                    '<div>' + MID(line.Description, 181, 30) + '</div>' +
+                                    IF(LEN(line.Description) > 240,
+                                        '<div>' + MID(line.Description, 211, 30) + '</div>' +
+                                        '<div>' + MID(line.Description, 241, 30) + '</div>',
+                                        '<div>' + MID(line.Description, 211, 60) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description, 181, 90) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description, 151, 120) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description, 121, 150) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description, 91, 180) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description, 61, 210) + '</div>'
+                ),
+                '<div>' + MID(line.Description, 31, 240) + '</div>'
+            ),
+            line.Description
+        )
+    }"/>
+</td>-->
+
+ <!--<td style="max-width: 300px; width: 300px;">
+  <div style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
+    <apex:outputText value="{!wrappedLineItems[rowCount - 1].processedDescription}" escape="false" />
+  </div>
+</td> -->
+  <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+  <!--<td style="width:130px; word-wrap: break-word; word-break: break-word;">
+    <apex:repeat value="{!lineItemDescriptionChunks[line.Id]}" var="lineChunk">
+      <div>{!lineChunk}</div>
+    </apex:repeat>
+  </td>-->
+  <td style="width:130px;">
+    <apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" />
+  </td>
+
+<!--<td style="width:auto; word-break:break-all; white-space:normal; font-size:10px; line-height:1.2;">
+    <apex:outputText escape="false" value="{!
+        IF(LEN(line.Description__c) > LEN(line.Description),
+            /* Use Description__c with multi-line slicing */
+            IF(LEN(line.Description__c) > 30,
+                '<div>' + LEFT(line.Description__c, 30) + '</div>' +
+                IF(LEN(line.Description__c) > 60,
+                    '<div>' + MID(line.Description__c, 31, 30) + '</div>' +
+                    IF(LEN(line.Description__c) > 90,
+                        '<div>' + MID(line.Description__c, 61, 30) + '</div>' +
+                        IF(LEN(line.Description__c) > 120,
+                            '<div>' + MID(line.Description__c, 91, 30) + '</div>' +
+                            IF(LEN(line.Description__c) > 150,
+                                '<div>' + MID(line.Description__c, 121, 30) + '</div>' +
+                                IF(LEN(line.Description__c) > 180,
+                                    '<div>' + MID(line.Description__c, 151, 30) + '</div>' +
+                                    IF(LEN(line.Description__c) > 210,
+                                        '<div>' + MID(line.Description__c, 181, 30) + '</div>' +
+                                        IF(LEN(line.Description__c) > 240,
+                                            '<div>' + MID(line.Description__c, 211, 30) + '</div>' +
+                                            '<div>' + MID(line.Description__c, 241, 30) + '</div>',
+                                            '<div>' + MID(line.Description__c, 211, 60) + '</div>'
+                                        ),
+                                        '<div>' + MID(line.Description__c, 181, 90) + '</div>'
+                                    ),
+                                    '<div>' + MID(line.Description__c, 151, 120) + '</div>'
+                                ),
+                                '<div>' + MID(line.Description__c, 121, 150) + '</div>'
+                            ),
+                            '<div>' + MID(line.Description__c, 91, 180) + '</div>'
+                        ),
+                        '<div>' + MID(line.Description__c, 61, 210) + '</div>'
+                    ),
+                    '<div>' + MID(line.Description__c, 31, 240) + '</div>'
+                ),
+                line.Description__c
+            ),
+            /* else show original Description as is */
+            line.Description
+        )
+    }"/>
+</td>-->
+
+
+
+
+ 
+                                
+                                <td class="no-wrap" style="text-align:right;">
+                                    <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                        <apex:param value="{!line.UnitPrice}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                        <apex:param value="{!line.UnitPrice}" />
+                                    </apex:outputText>
+                                </td>
+                                <td class="no-wrap" style="text-align:right;">
+                                    <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="${0, number, ###,###,##0.00}">
+                                        <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, ###,###,##0.00}">
+                                        <apex:param value="{!line.varcpq__EXT_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+            
+            <!-- Totals Section -->
+            <div class="totals-wrapper">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Sub Total:</td>
+                        <td class="total-value">
+                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                <apex:param value="{!quote.varcpq__Sub_Total__c}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                <apex:param value="{!quote.varcpq__Sub_Total__c}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <!-- GST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(quote.CurrencyIsoCode == 'CAD', quote.Tax_Amount_GST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!quote.Tax_Amount_GST__c > 0}" value="GST ({0, number, 0.000}%):">
+                                    <apex:param value="{!quote.Tax_Rate_GST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.Tax_Amount_GST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!quote.Tax_Amount_GST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- PST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(quote.CurrencyIsoCode == 'CAD', quote.Tax_Amount_PST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!quote.Tax_Amount_PST__c > 0}" value="PST ({0, number, 0.000}%):">
+                                    <apex:param value="{!quote.Tax_Rate_PST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.Tax_Amount_PST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!quote.Tax_Amount_PST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- HST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(quote.CurrencyIsoCode == 'CAD', quote.Tax_Amount_HST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!quote.Tax_Amount_HST__c > 0}" value="HST ({0, number, 0.000}%):">
+                                    <apex:param value="{!quote.Tax_Rate_HST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.Tax_Amount_HST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!quote.Tax_Amount_HST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <!-- QST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(quote.CurrencyIsoCode == 'CAD', quote.Tax_Amount_QST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!quote.Tax_Amount_QST__c > 0}" value="QST ({0, number, 0.000}%):">
+                                    <apex:param value="{!quote.Tax_Rate_QST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.Tax_Amount_QST__c > 0}" value="CAD {0, Number, Currency}">
+                                    <apex:param value="{!quote.Tax_Amount_QST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(quote.Tax )), quote.Tax != 0 )}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!AND(quote.CurrencyIsoCode == 'USD', quote.Tax > 0)}" value="Tax ({0, number,0.000'%'}):">
+                                    <apex:param value="{!quote.Tax_Rate__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!AND(quote.CurrencyIsoCode == 'USD', quote.Tax > 0)}" value="{0, Number, Currency}">
+                                    <apex:param value="{!quote.Tax}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel> 
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(quote.ShippingHandling)), quote.ShippingHandling != 0)}">
+                        <tr > 
+                            <td class="total-label">Shipping and Handling:</td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                    <apex:param value="{!quote.ShippingHandling}" />
+                                </apex:outputText>
+                                <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                    <apex:param value="{!quote.ShippingHandling}" />
+                                </apex:outputText> 
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="none" rendered="{!AND(AND(NOT(ISBLANK(quote.AVA_SFCLOUD__ShippingHandling_Tax__c)), quote.AVA_SFCLOUD__ShippingHandling_Tax__c != 0),quote.CurrencyIsoCode == 'CAD')}">
+                        <tr> 
+                            <td class="total-label">Shipping and Handling Tax:</td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                    <apex:param value="{!quote.AVA_SFCLOUD__ShippingHandling_Tax__c}" />
+                                </apex:outputText> 
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    <tr>
+                        <td class="total-label grand-total">Total:</td>
+                        <td class="total-value grand-total">
+                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="{0, number, Currency}">
+                                <apex:param value="{!quote.GrandTotal}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="CAD {0, number, Currency}">
+                                <apex:param value="{!quote.GrandTotal}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </div>
+        
+        <!--Render Customer Notes If Present
+        <apex:outputPanel rendered="{!NOT(ISBLANK(quote.varcpq__Customer_Notes__c))}">
+            <div class="section">
+                <div style="margin-top:20px;">
+                    <b>Notes: </b> {!quote.varcpq__Customer_Notes__c}
+                </div>
+            </div>
+        </apex:outputPanel>-->
+        
+        <apex:outputPanel rendered="{!NOT(ISNULL(customerNotes)) && customerNotes.size > 0}">
+            <div class="section" style="margin-top:20px;">
+               
+                <apex:repeat value="{!customerNotes}" var="note">
+                    <div class="row" style="margin-top:10px;">
+                        <b>{!note.label}:</b><br/>
+                        <apex:outputText value="{!note.text}" escape="false" />
+                    </div>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>
+        
+        <!-- THE FOOTER -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-disclaimer">
+                    <p>
+                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}" value="Currency is CAD unless noted otherwise." />
+                        <apex:outputText rendered="{!quote.CurrencyIsoCode == 'USD'}" value="Currency is USD unless noted otherwise." />
+                    </p>
+                    <p>
+                        If you are granted {!quote.Quote_Net_Terms__c} payment terms, you agree that if you are late paying your invoice, a 1.5%
+                        finance charge or the maximum charge permitted by law may be assessed against all accounts with past due balances.
+                        You agree to pay all the company's reasonable attorney's fees and all collection agency fees incurred in the collection of any
+                        amount owed thereunder and not paid when due.
+                    </p>
+                </div>
+                <table class="footer-table">
+                    <tr>
+                        <td class="footer-left">
+                            <apex:outputText rendered="{!quote.CurrencyIsoCode == 'CAD'}">
+                                GST/HST# 736342684 RT0001 // QST# 1226145814 TQ0002 // PST 7508781
+                            </apex:outputText>
+                        </td>
+                        <td class="footer-right">
+                            Quote #{!quote.QuoteNumber} &nbsp;&nbsp;&nbsp; Page <span id="pageNum"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</apex:page>

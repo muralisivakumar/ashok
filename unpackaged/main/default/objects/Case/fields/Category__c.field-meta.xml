@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <label>Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Queue__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Accounts Receivable (AR) Collections</fullName>
+                <default>false</default>
+                <label>Accounts Receivable (AR) Collections</label>
+            </value>
+            <value>
+                <fullName>Amazon</fullName>
+                <default>false</default>
+                <label>Amazon</label>
+            </value>
+            <value>
+                <fullName>Customer Invoice Issuance or Adjustments</fullName>
+                <default>false</default>
+                <label>Customer Invoice Issuance or Adjustments</label>
+            </value>
+            <value>
+                <fullName>Corporate credit card receipts</fullName>
+                <default>false</default>
+                <label>Corporate credit card receipts</label>
+            </value>
+            <value>
+                <fullName>Credit Card Payment Required</fullName>
+                <default>false</default>
+                <label>Credit Card Payment Required</label>
+            </value>
+            <value>
+                <fullName>Deal Registration</fullName>
+                <default>false</default>
+                <label>Deal Registration</label>
+            </value>
+            <value>
+                <fullName>Expense and Payment Recordkeeping</fullName>
+                <default>false</default>
+                <label>Expense and Payment Recordkeeping</label>
+            </value>
+            <value>
+                <fullName>Customer Payment Remittances</fullName>
+                <default>false</default>
+                <label>Customer Payment Remittances</label>
+            </value>
+            <value>
+                <fullName>Miscellaneous</fullName>
+                <default>false</default>
+                <label>Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>Misrouted Requests and Escalations</fullName>
+                <default>false</default>
+                <label>Misrouted Requests and Escalations</label>
+            </value>
+            <value>
+                <fullName>Order Updates</fullName>
+                <default>false</default>
+                <label>Order Updates</label>
+            </value>
+            <value>
+                <fullName>Overhead Invoice and Credit Memo Management</fullName>
+                <default>false</default>
+                <label>Overhead Invoice and Credit Memo Management</label>
+            </value>
+            <value>
+                <fullName>Payment Issuance Confirmation</fullName>
+                <default>false</default>
+                <label>Payment Issuance Confirmation</label>
+            </value>
+            <value>
+                <fullName>Customer Payment Queries</fullName>
+                <default>false</default>
+                <label>Customer Payment Queries</label>
+            </value>
+            <value>
+                <fullName>Purchase Order Management</fullName>
+                <default>false</default>
+                <label>Purchase Order Management</label>
+            </value>
+            <value>
+                <fullName>Sales and use tax related</fullName>
+                <default>false</default>
+                <label>Sales and use tax related</label>
+            </value>
+            <value>
+                <fullName>Shipment Confirmation Management</fullName>
+                <default>false</default>
+                <label>Shipment Confirmation Management</label>
+            </value>
+            <value>
+                <fullName>Supplier Invoice and Credit Memo Management</fullName>
+                <default>false</default>
+                <label>Supplier Invoice and Credit Memo Management</label>
+            </value>
+            <value>
+                <fullName>Supplier Payment Inquiries</fullName>
+                <default>false</default>
+                <label>Supplier Payment Inquiries</label>
+            </value>
+            <value>
+                <fullName>Supplier Set Ups &amp; Updates</fullName>
+                <default>false</default>
+                <label>Supplier Set Ups &amp; Updates</label>
+            </value>
+            <value>
+                <fullName>Tax Exempt Forms</fullName>
+                <default>false</default>
+                <label>Tax Exempt Forms</label>
+            </value>
+            <value>
+                <fullName>Unable to Categorize</fullName>
+                <default>false</default>
+                <label>Unable to Categorize</label>
+            </value>
+            <value>
+                <fullName>Vendor Account Reconciliation</fullName>
+                <default>false</default>
+                <label>Vendor Account Reconciliation</label>
+            </value>
+            <value>
+                <fullName>Bill Only Order Needed</fullName>
+                <default>false</default>
+                <label>Bill Only Order Needed</label>
+            </value>
+            <value>
+                <fullName>RMA Needed</fullName>
+                <default>false</default>
+                <label>RMA Needed</label>
+            </value>
+            <value>
+                <fullName>Supplier Pricing Issue</fullName>
+                <default>false</default>
+                <label>Supplier Pricing Issue</label>
+            </value>
+            <value>
+                <fullName>Remittance Advice Management</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Remittance Advice Management</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Unknown</controllingFieldValue>
+            <controllingFieldValue>Multiple</controllingFieldValue>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Unable to Categorize</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Corporate credit card receipts</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Expense and Payment Recordkeeping</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Miscellaneous</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Misrouted Requests and Escalations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Overhead Invoice and Credit Memo Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Payment Issuance Confirmation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Sales and use tax related</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Shipment Confirmation Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Supplier Invoice and Credit Memo Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Supplier Payment Inquiries</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Accounting CA</controllingFieldValue>
+            <controllingFieldValue>Accounting US</controllingFieldValue>
+            <valueName>Vendor Account Reconciliation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Accounts Receivable (AR) Collections</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Customer Invoice Issuance or Adjustments</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Customer Payment Remittances</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Customer Payment Queries</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Invoices CA</controllingFieldValue>
+            <controllingFieldValue>Invoices US</controllingFieldValue>
+            <valueName>Purchase Order Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Amazon</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Credit Card Payment Required</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Deal Registration</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Order Updates</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Supplier Set Ups &amp; Updates</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Operations CA</controllingFieldValue>
+            <controllingFieldValue>Operations US</controllingFieldValue>
+            <valueName>Tax Exempt Forms</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

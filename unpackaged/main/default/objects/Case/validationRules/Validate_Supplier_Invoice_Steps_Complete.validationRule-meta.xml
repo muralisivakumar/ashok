@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validate_Supplier_Invoice_Steps_Complete</fullName>
+    <active>true</active>
+    <description>This Validation is to make sure the invoice has been sent to the customer and posted to quickbooks before the case can be closed for Cases in the Accounting US or Accounting CA Queue and Category of Supplier Invoices and Credit Memo Mgmt</description>
+    <errorConditionFormula>AND(
+    OR(
+        ISPICKVAL(Status, &quot;Closed&quot;),
+        ISPICKVAL(Status, &quot;Done&quot;)
+    ),
+    OR(
+        NOT(Invoice_Sent_to_Customer__c),
+        NOT(Invoice_Posted_to_QuickBooks__c)
+    ),
+    OR(
+        ISPICKVAL(Queue__c, &quot;Accounting CA&quot;),
+        ISPICKVAL(Queue__c, &quot;Accounting US&quot;)
+    ),
+    ISPICKVAL(Category__c, &quot;Supplier Invoice and Credit Memo Management&quot;)
+)</errorConditionFormula>
+    <errorMessage>This Case can not be marked Complete until both invoice steps have been marked complete</errorMessage>
+</ValidationRule>

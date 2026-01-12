@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HTML_Template__c</fullName>
+    <description>HTML version of the email template. Use merge fields with {!Field_Name__c} syntax.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>HTML Template</label>
+    <length>131072</length>
+    <type>LongTextArea</type>
+    <visibleLines>25</visibleLines>
+</CustomField>

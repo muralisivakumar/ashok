@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>varcpq_line_tax_rate__c</fullName>
+    <description>Max line tax rate on Quote</description>
+    <label>varcpq line tax rate</label>
+    <summarizedField>QuoteLineItem.varcpq__Tax_Rate__c</summarizedField>
+    <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

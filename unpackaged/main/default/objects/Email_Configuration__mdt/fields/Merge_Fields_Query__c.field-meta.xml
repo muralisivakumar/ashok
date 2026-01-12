@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Merge_Fields_Query__c</fullName>
+    <description>Query fields needed for email template merge fields (e.g., Contact.FirstName, Contact.LastName)</description>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <label>Merge Fields Query</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

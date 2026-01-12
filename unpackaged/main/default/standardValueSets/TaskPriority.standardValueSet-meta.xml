@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>P0</fullName>
+        <default>false</default>
+        <label>P0</label>
+        <highPriority>true</highPriority>
+    </standardValue>
+    <standardValue>
+        <fullName>P1</fullName>
+        <default>false</default>
+        <label>P1</label>
+        <highPriority>false</highPriority>
+    </standardValue>
+    <standardValue>
+        <fullName>P2</fullName>
+        <default>true</default>
+        <label>P2</label>
+        <highPriority>false</highPriority>
+    </standardValue>
+    <standardValue>
+        <fullName>P3</fullName>
+        <default>false</default>
+        <label>P3</label>
+        <highPriority>false</highPriority>
+    </standardValue>
+    <standardValue>
+        <fullName>Nice to Have</fullName>
+        <default>false</default>
+        <label>Nice to Have</label>
+        <highPriority>false</highPriority>
+    </standardValue>
+</StandardValueSet>

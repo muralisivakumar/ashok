@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Shipping_Refund_Cannot_Be_Negative</fullName>
+    <active>true</active>
+    <errorConditionFormula>Shipping_Refund__c  &lt; 0</errorConditionFormula>
+    <errorDisplayField>Shipping_Refund__c</errorDisplayField>
+    <errorMessage>Shipping Refund can not be a negative value</errorMessage>
+</ValidationRule>

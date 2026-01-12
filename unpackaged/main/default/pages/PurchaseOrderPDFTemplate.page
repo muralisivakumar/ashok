@@ -1,0 +1,671 @@
+<apex:page controller="PurchaseOrderPDFController" applyBodyTag="false" showHeader="false" sidebar="false" renderAs="pdf">
+    <head>
+        <style>
+            /* Basic page setup */
+            @page {
+                size: {!pageOrientation};
+                margin: 0.5in 0.5in 1.5in 0.5in; /* Increased bottom margin for footer */
+                counter-increment: page; /* Changed from "pages" to "page" */
+                @bottom-center {
+                    content: element(footer);
+                }
+            }
+            
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+            }
+
+            p {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            /* Layout styles */
+            .row {
+                float: left;
+                width: 100%;
+                margin-bottom: 12px;
+                clear: both;
+            }
+            
+            .col {
+                width: 48%;
+            }
+            
+            .left {
+                float: left;
+            }
+            
+            .right {
+                float: right;
+            }
+            
+            /* Header styles */
+            #header {
+                font-size: 12px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            
+            /* Info box styling */
+            .info-box {
+                border: 1px solid #ccc;
+                background-color: #f5f5f5;
+                padding: 5px 8px 8px;
+                margin-bottom: 5px; /* Reduced from 15px to 8px */
+                height: 140px; /* Fixed height for all address boxes */
+                overflow: auto; /* Add scrolling if content exceeds height */
+                word-wrap: break-word; /* Allow words to break */
+                word-break: break-word; /* Modern browsers will break at appropriate points */
+            }
+            
+            /* Email wrapping */
+            .email-wrap {
+                word-wrap: break-word; 
+                word-break: break-all; /* Force break anywhere if needed */
+                max-width: 100%;
+                display: inline-block;
+            }
+            
+            .info-box h3 {
+                margin: 0 0 2px 0;
+                padding: 0 0 2px 0;
+                border-bottom: 1px solid #ddd;
+                font-size: 14px;
+            }
+            
+            /* purchaseorder info table */
+            .purchaseorder-info {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 7px;
+            }
+            
+            .purchaseorder-info td {
+                padding: 3px;
+                border: 1px solid #ccc;
+                text-align: center; /* Center align all cells */
+            }
+            
+            .purchaseorder-info td.label {
+                font-weight: bold;
+                background-color: #f5f5f5;
+                width: 40%;
+            }
+            
+            /* Order info table */
+            .order-info-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 5px;
+                font-size: 11px;
+            }
+            
+            .order-info-table th {
+                background-color: #8DAEC1;
+                color: white;
+                text-align: left;
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            .order-info-table td {
+                padding: 5px 8px;
+                border: 1px solid #ccc;
+            }
+            
+            /* Line items table styling */
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 11px;
+            }
+            
+            .table th {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                padding: 6px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            
+            .table td {
+                padding: 6px;
+                border: 1px solid #ccc;
+                vertical-align: top;
+            }
+            
+            .table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            
+            /* Group header and subtotal */
+            .group-header {
+                background-color: #8DAEC1;
+                color: white;
+                font-weight: bold;
+                font-size: 12px;
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-bottom: none;
+            }
+            
+            .group-subtotal {
+                background-color: #f3f3f3;
+                font-weight: bold;
+            }
+            
+            /* Totals section - Updated with page-break-inside: avoid */
+            .totals-section {
+                width: 100%;
+                page-break-inside: avoid;
+            }
+            
+            .totals-table {
+                width: 350px;
+                float: right;
+                border-collapse: collapse;
+                page-break-inside: avoid;
+            }
+            
+            .totals-table tr {
+                margin-top: 20px;
+                padding: 10px;
+            }
+            
+            .totals-table td {
+                font-size: 11px;
+            }
+            
+            .total-label {
+                text-align: right;
+            }
+            
+            .total-value {
+                text-align: right;
+                width: 120px;
+            }
+            
+            td.grand-total {
+                font-weight: bold;
+                border-top: 1px solid #000;
+            }
+            
+            /* Footer styling - updated */
+            .footer {
+                position: running(footer);
+                width: 100%;
+                font-size: 9px;
+                color: #666;
+                padding-top: 8px;
+                border-top: 1px solid #ddd;
+                border: 1px solid transparent;
+            }
+
+            .footer-content {
+                width: 100%;
+            }
+
+            .footer-disclaimer {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .footer-row {
+                width: 100%;
+                display: table;
+                table-layout: fixed;
+            }
+
+            .footer-left {
+                display: table-cell;
+                text-align: left;
+                width: 70%;
+            }
+
+            .footer-right {
+                display: table-cell;
+                text-align: right;
+                width: 30%;
+            }
+            
+            /* Fixed page number display */
+            #pageNum:after {
+                content: counter(page);
+            }
+            
+            /* Address columns styling */
+            .address-col {
+                width: 32%;
+            }
+            
+            .middle {
+                float: left;
+                margin-left: 2%;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header Section -->
+        <div id="header" class="section">
+            <div class="row">
+                <div class="col left">
+                    <apex:outputPanel rendered="{!account.RecordType.Name == 'Canadian Account'}">
+                        <apex:image id="logoCA" value="{!$Resource.LogoCA}" width="200"/>   
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!account.RecordType.Name == 'US Account'}">
+                        <apex:image id="logoUS" value="{!$Resource.LogoUS}" width="225"/>   
+                    </apex:outputPanel>
+                </div>
+                <div class="col right" style="text-align: right;">
+                    <div style="font-size:20pt; font-weight:bold; margin-bottom:10px;">Supplier Purchase Order</div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col left">
+                    <p>
+                        <strong>{!companyInfo.name}</strong><br/>
+                        {!companyInfo.street}<br/>
+                        {!companyInfo.suite}<br/>
+                        {!companyInfo.cityStateZip}<br/>
+                        Phone: {!companyInfo.phone}<br/>
+                        <a href="{!companyInfo.website}">{!companyInfo.website}</a>
+                    </p>
+                </div>
+                <div class="col right">
+                    <table class="purchaseorder-info">
+                        <tr>
+                            <td class="label">PO #</td>
+                            <td>{!purchaseOrder.Name}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Terms</td>
+                            <td>{!purchaseOrder.varcpq__Distributor_Name__r.varcpq__NET_TERMS__c}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Pay Acct</td>
+                            <td>{!purchaseOrder.Pay_Account__c}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">PO Date</td>
+                            <td>
+                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                    <apex:param value="{!purchaseOrder.varcpq__PO_Date__c}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <p style="margin-top:5px; text-align:right;">
+                        <strong>Reseller Contact:</strong> Clutch Purchasing<br/>
+                        <span class="email-wrap">
+                            <apex:outputText value="{!IF(LEN(companyInfo.operationsReplyToEmail) > 75, SUBSTITUTE(companyInfo.operationsReplyToEmail, '@', '<br/>@'), companyInfo.operationsReplyToEmail)}" escape="false" />
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Address Section -->
+        <div class="section">
+            <div class="row">
+                <div class="col left" style="width:32%;">
+                    <div class="info-box">
+                        <h3>Supplier</h3>
+                        <p>
+                            {!purchaseOrder.varcpq__Distributor_Name__r.Name}<br/>
+                            {!purchaseOrder.varcpq__Distributor_Contact__r.Name}<br/>
+                            {!supplierAddress.varcpq__Street__c}<br/>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(supplierAddress.varcpq__Additional_Street__c))}">
+                                {!supplierAddress.varcpq__Additional_Street__c}<br/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(supplierAddress.varcpq__City__c))}">
+                                {!supplierAddress.varcpq__City__c}, {!supplierAddress.varcpq__State__c} {!supplierAddress.varcpq__Zipcode__c}<br/>
+                            </apex:outputPanel>
+                            {!supplierAddress.Country__c}<br/>
+                            <apex:outputText value="{!purchaseOrder.varcpq__Distributor_Contact__r.Phone}" rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Distributor_Contact__r.Phone))}" /><br/>
+                            <apex:outputText styleClass="email-wrap" value="{!IF(LEN(purchaseOrder.varcpq__Distributor_Contact__r.Email) > 36, SUBSTITUTE(purchaseOrder.varcpq__Distributor_Contact__r.Email, '@', '<br/>@'), purchaseOrder.varcpq__Distributor_Contact__r.Email)}" escape="false" rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Distributor_Contact__r.Email))}" />
+                        </p>
+                    </div>
+                </div>
+                <div class="col left" style="width:32%; margin-left:2%;">
+                    <div class="info-box">
+                        <h3>Bill To</h3>
+                        <p>
+                            {!companyInfo.name}<br/>
+                            Accounts Payable<br/>
+                            {!companyInfo.street}<br/>
+                            {!companyInfo.suite}<br/>
+                            {!companyInfo.cityStateZip}<br/>
+                            <span class="email-wrap">
+                                <apex:outputText value="{!IF(LEN(companyInfo.accountingReplyToEmail) > 36, SUBSTITUTE(companyInfo.accountingReplyToEmail, '@', '<br/>@'), companyInfo.accountingReplyToEmail)}" escape="false" />
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col right" style="width:32%;">
+                    <div class="info-box">
+                        <h3>Ship To</h3>
+                        <p>
+                            {!salesOrder.Shipping_Company__c}<br/>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(salesOrder.Additional_Ship_To_Header__c))}">
+                                {!salesOrder.Additional_Ship_To_Header__c}<br/>
+                            </apex:outputPanel>
+                            Attn: {!salesOrder.Shipping_Contact_Name__c}<br/>
+                            {!salesOrder.varcpq__Shipping_Street__c}<br/>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(salesOrder.Shipping_Additional_Street__c))}">
+                                {!salesOrder.Shipping_Additional_Street__c}<br/>
+                            </apex:outputPanel>
+                            {!salesOrder.varcpq__Shipping_City__c}, {!salesOrder.varcpq__Shipping_State__c} {!salesOrder.varcpq__Shipping_Zip__c}<br/>
+                            <apex:outputPanel rendered="{!NOT(ISBLANK(salesOrder.Shipping_Country__c))}">
+                                {!salesOrder.Shipping_Country__c}<br/>
+                            </apex:outputPanel>
+                            {!salesOrder.Shipping_Phone__c}<br/>
+                            <apex:outputText value="{!IF(LEN(salesOrder.Shipping_Email__c) > 36, SUBSTITUTE(salesOrder.Shipping_Email__c, '@', '<br/>@'), salesOrder.Shipping_Email__c)}" escape="false" styleClass="email-wrap" rendered="{!NOT(ISBLANK(salesOrder.Shipping_Email__c))}" />
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Info Row -->
+            <div class="row">
+                <table class="order-info-table">
+                    <tr>
+                        <th>Customer PO</th>
+                        <th>Contract</th>
+                        <th>Ship Via</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!purchaseOrder.varcpq__Customer_PO__c}" rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Customer_PO__c))}" />
+                        </td>
+                        <td></td>
+                        <td>
+                            <apex:outputText value="{!purchaseOrder.varcpq__Shipping_Method__c}" rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Shipping_Method__c))}" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Additional Order Info -->
+            <div class="row">
+                <table class="order-info-table">
+                    <tr>
+                        <th>Carrier Account No.</th>
+                        <th>Shipping Instructions</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>{!purchaseOrder.varcpq__Shipping_Instructions__c}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Line Items Table -->
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:4%;text-align:center;">Line #</th>
+                            <th style="width:8%;text-align:center;">Cust PO Line No</th>
+                            <th style="width:15%;">Mfg</th>
+                            <th style="width:10%;">Part #</th>
+                            <th>Product Description</th>
+                            <th style="width:5%;text-align:center;">Qty</th>
+                            <th style="width:13%;text-align:right;">Unit Cost</th>
+                            <th style="width:13%;text-align:right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!lineItems}" var="line">
+                            <tr>
+                                <td style="text-align:center;">{!line.varcpq__DH_Line__c}</td>
+                                <td style="text-align:center;">
+                                    {!'P' & TEXT(VALUE(SUBSTITUTE(line.Name, 'POLI-', '')))}
+                                </td>
+                                <td>{!line.varcpq__Manufacturer__c}</td>
+				 <!-- Updated by Vishnu on 07/11/2025 for "P6 - Customer Notes Formatting Lost When Generating PDF" -->
+				<!-- <td>{!line.varcpq__Part_No__c}</td> -->
+                                <td>
+                                <apex:outputText value="{!IF(LEN(line.varcpq__Part_No__c) > 10,
+                                                            LEFT(line.varcpq__Part_No__c, 10) + '<br/>' + 
+                                                            IF(LEN(line.varcpq__Part_No__c) > 20,
+                                                            MID(line.varcpq__Part_No__c, 11, 10) + '<br/>' + 
+                                                            MID(line.varcpq__Part_No__c, 21, 100),
+                                                            MID(line.varcpq__Part_No__c, 11, 100)
+                                                            ),
+                                                            line.varcpq__Part_No__c
+                                                            )}" escape="false" />
+					    
+                                </td>
+                                      <!--  <td>{!line.varcpq__Description__c}</td>-->
+  
+   <td style="width:130px;">
+   <apex:outputText value="{!lineItemDescriptionChunks[line.Id]}" escape="false" />
+  </td>
+
+                                <td style="text-align:center;">
+                                    <apex:outputText value="{0, number, 0}">
+                                        <apex:param value="{!line.varcpq__Quantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align:right;">
+                                    <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="${0, number, .00}">
+                                        <apex:param value="{!line.varcpq__Unit_Cost__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, .00}">
+                                        <apex:param value="{!line.varcpq__Unit_Cost__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align:right;">
+                                    <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="${0, number, .00}">
+                                        <apex:param value="{!line.varcpq__Unit_Cost__c * line.varcpq__Quantity__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, .00}">
+                                        <apex:param value="{!line.varcpq__Unit_Cost__c * line.varcpq__Quantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Totals Section -->
+            <div class="totals-section">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Sub Total:</td>
+                        <td class="total-value">
+                            <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="${0, number, .00}">
+                                <apex:param value="{!purchaseOrder.varcpq__LIT__c}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, .00}">
+                                <apex:param value="{!purchaseOrder.varcpq__LIT__c}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    
+                    <apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(purchaseOrder.Taxes__c)), purchaseOrder.Taxes__c != 0 )}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'USD', purchaseOrder.Taxes__c > 0)}" value="Tax ({0, number,0.00'%'}):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'USD', purchaseOrder.Taxes__c > 0)}" value="{0, number, Currency}">
+                                    <apex:param value="{!purchaseOrder.Taxes__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <!-- GST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'CAD', NOT(ISBLANK(purchaseOrder.Tax_Amount_GST__c)), purchaseOrder.Tax_Amount_GST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText value="GST ({0, number, 0.00}%):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate_GST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText value="CAD ${0, Number, .00}">
+                                    <apex:param value="{!purchaseOrder.Tax_Amount_GST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <!-- PST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'CAD', NOT(ISBLANK(purchaseOrder.Tax_Amount_PST__c)), purchaseOrder.Tax_Amount_PST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText value="PST ({0, number, 0.00}%):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate_PST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText value="CAD ${0, Number, .00}">
+                                    <apex:param value="{!purchaseOrder.Tax_Amount_PST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <!-- HST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'CAD', NOT(ISBLANK(purchaseOrder.Tax_Amount_HST__c)), purchaseOrder.Tax_Amount_HST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText value="HST ({0, number, 0.00}%):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate_HST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText value="CAD ${0, Number, .00}">
+                                    <apex:param value="{!purchaseOrder.Tax_Amount_HST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <!-- QST -->
+                    <apex:outputPanel layout="none" rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'CAD', NOT(ISBLANK(purchaseOrder.Tax_Amount_QST__c)), purchaseOrder.Tax_Amount_QST__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText value="QST ({0, number, 0.00}%):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate_QST__c}"/>
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText value="CAD ${0, Number, .00}">
+                                    <apex:param value="{!purchaseOrder.Tax_Amount_QST__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <!-- US Tax -->
+                    <!-- <apex:outputPanel layout="none" rendered="{!AND(purchaseOrder.CurrencyIsoCode == 'USD', NOT(ISBLANK(purchaseOrder.Tax_Amount__c)), purchaseOrder.Tax_Amount__c > 0)}">
+                        <tr>
+                            <td class="total-label">
+                                <apex:outputText value="Tax ({0, number, 0.00}%):">
+                                    <apex:param value="{!purchaseOrder.Tax_Rate__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="total-value">
+                                <apex:outputText value="${0, number, .00}">
+                                    <apex:param value="{!purchaseOrder.Tax_Amount__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel> -->
+                    
+                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Freight_Allowance__c))}">
+                        <tr>
+                            <td class="total-label">Freight Allowance:</td>
+                            <td class="total-value">
+                                <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="${0, number, .00}">
+                                    <apex:param value="{!purchaseOrder.varcpq__Freight_Allowance__c}" />
+                                </apex:outputText>
+                                <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, .00}">
+                                    <apex:param value="{!purchaseOrder.varcpq__Freight_Allowance__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:outputPanel>
+                    
+                    <tr>
+                        <td class="total-label grand-total">Total:</td>
+                        <td class="total-value grand-total">
+                            <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="${0, number, .00}">
+                                <apex:param value="{!purchaseOrder.Purchase_Order_Grand_Total__c}" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="CAD ${0, number, .00}">
+                                <apex:param value="{!purchaseOrder.Purchase_Order_Grand_Total__c}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Additional Information Sections -->
+        <apex:outputPanel rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__Comments__c))}">
+            <div class="section">
+                <div class="row" style="margin-top:20px;">
+                    <b>Comments: </b> {!purchaseOrder.varcpq__Comments__c}
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!NOT(ISNULL(customerNotes)) && customerNotes.size > 0}">
+            <div class="section" style="margin-top:20px;">
+               
+                <apex:repeat value="{!customerNotes}" var="note">
+                    <div class="row" style="margin-top:10px;">
+                        <b>{!note.label}:</b><br/>
+                        <apex:outputText value="{!note.text}" escape="false" />
+                    </div>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!NOT(ISBLANK(purchaseOrder.varcpq__PO_Terms_and_Conditions__c))}">
+            <div class="section">
+                <div class="row" style="margin-top:20px;">
+                    <b>Terms and Conditions: </b> {!purchaseOrder.varcpq__PO_Terms_and_Conditions__c}
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <!-- THE FOOTER -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-disclaimer">
+                    <p>
+                        <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}" value="Currency is CAD unless noted otherwise." />
+                        <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'USD'}" value="Currency is USD unless noted otherwise." />
+                    </p>
+                </div>
+                <div class="footer-row">
+                    <div class="footer-left">
+                        <apex:outputText rendered="{!purchaseOrder.CurrencyIsoCode == 'CAD'}">
+                            GST/HST# 736342684 RT0001 // QST# 1226145814 TQ0002 // PST 7508781
+                        </apex:outputText>
+                    </div>
+                    <div class="footer-right">
+                        Purchase Order #{!purchaseOrder.Name} &nbsp;&nbsp;&nbsp; Page <span id="pageNum"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</apex:page>

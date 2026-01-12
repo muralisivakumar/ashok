@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Show_Download_Button__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Controls visibility of the Download PDF button</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Show Download Button</label>
+    <type>Checkbox</type>
+</CustomField>

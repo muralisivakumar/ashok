@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Line_Start_Date__c</fullName>
+    <inlineHelpText>If Quote line item has Start Date</inlineHelpText>
+    <label>Line Start Date</label>
+    <summarizedField>QuoteLineItem.Term_Start_Date__c</summarizedField>
+    <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Errors</fullName>
+    <columns>NAME</columns>
+    <columns>Resource__c</columns>
+    <columns>Date__c</columns>
+    <columns>Geo__c</columns>
+    <columns>Notes__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>Email Error</value>
+    </filters>
+    <label>Email Errors</label>
+    <sharedTo>
+        <group>Operations_Managers</group>
+    </sharedTo>
+</ListView>

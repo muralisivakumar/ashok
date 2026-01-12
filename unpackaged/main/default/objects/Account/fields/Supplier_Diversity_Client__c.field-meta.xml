@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Supplier_Diversity_Client__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Does this Account utilize Clutch for our MBE Diversity/Minority Status</description>
+    <label>Supplier Diversity Client</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
